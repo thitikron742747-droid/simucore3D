@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimuCore 3D Workspace | ห้องปฏิบัติการเครือข่ายจำลอง 3D</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="workspace.css">
+  <link rel="stylesheet" href="glass.css">
+  <link rel="stylesheet" href="workspace-glass.css">
+  <link rel="stylesheet" href="lab-plus.css">
+  <link rel="stylesheet" href="life-plus.css">
+  <script src="config.js"></script>
+  <script src="store.js"></script>
+  <script>Store.requireLogin();</script>
+</head>
+<body class="glass-theme ws-glass">
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<div class="app-container">
+  <!-- Top Header Navigation -->
+  <header class="glass">
+    <a class="brand" href="index.html" onclick="event.preventDefault(); returnToHome()" title="กลับหน้าหลัก">
+      <svg class="brand-mark" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="5" fill="#2c3442" stroke="#3a4454"/><rect x="6" y="11" width="9" height="8" rx="1.5" fill="#1b2029" stroke="#6b778a"/><rect x="19" y="11" width="9" height="8" rx="1.5" fill="#1b2029" stroke="#6b778a"/><circle cx="10.5" cy="24" r="1.8" fill="#3ddc84"/><circle cx="23.5" cy="24" r="1.8" fill="#38c6f4"/></svg>
+      <div class="brand-text">
+        <span>Simu<b>Core</b> 3D</span>
+        <small class="brand-project" id="projectTitle">กำลังโหลด…</small>
+      </div>
+    </a>
+
+    <div class="mode-selector">
+      <button class="mode-btn active" id="btnMode3D" onclick="switchViewMode('3d')">
+        <i class="fa-solid fa-cube"></i> ห้องจำลอง 3D
+      </button>
+      <button class="mode-btn" id="btnMode360" onclick="switchViewMode('360')">
+        <i class="fa-solid fa-vr-cardboard"></i> เดินสำรวจ 360°
+      </button>
+    </div>
+
+    <div class="top-actions">
+      <button class="btn btn-success" onclick="saveWorkspaceData()" title="บันทึกสถานะห้องปฏิบัติการ">
+        <i class="fa-solid fa-floppy-disk"></i> บันทึก
+      </button>
+      <button class="btn" onclick="returnToHome()" title="บันทึกและกลับสู่หน้าหลัก">
+        <i class="fa-solid fa-house"></i> หน้าหลัก
+      </button>
+      <button class="btn" onclick="openLabTutorial()"><i class="fa-solid fa-graduation-cap"></i> บทเรียน</button>
+      <button class="btn btn-primary" onclick="runNetworkDiagnostics()" title="ตรวจการตั้งค่าและทดสอบ ping ทั้งระบบ"><i class="fa-solid fa-play"></i> รันระบบ</button>
+      <button class="btn btn-success" onclick="openBrowserSim()"><i class="fa-solid fa-globe"></i> ทดสอบเว็บ</button>
+      <span class="ws-avatar" id="wsAvatar" title=""></span>
+    </div>
+  </header>
+
+  <!-- Main Workspace Area -->
+  <div class="main-workspace">
+    <!-- Left Sidebar -->
+    <aside class="sidebar-left glass">
+      <div class="panel-section">
+        <div class="panel-title"><span><i class="fa-solid fa-hammer"></i> ออกแบบห้อง</span></div>
+        <div class="room-opt-group">
+          <div class="form-group">
+            <label for="roomSizeSelect">พื้นที่จัดทำเครือข่าย</label>
+            <select id="roomSizeSelect" onchange="changeRoomConfig()">
+              <optgroup label="ห้องเดียว">
+                <option value="medium">ห้องขนาดกลาง (8×8 เมตร)</option>
+                <option value="small">ห้องขนาดเล็ก (6×6 เมตร)</option>
+                <option value="large">ห้องศูนย์ข้อมูลใหญ่ (12×10 เมตร)</option>
+              </optgroup>
+              <optgroup label="หลายห้อง / หลายอาคาร">
+                <option value="home">บ้าน 2 ห้องนอน (14×10 ม.)</option>
+                <option value="floor">อาคาร 1 ชั้น 4 ห้อง (24×14 ม.)</option>
+                <option value="campus">วิทยาเขต 3 อาคาร (≈250×180 ม.)</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="zone-nav" id="zoneNav" hidden></div>
+          <div class="big-templates">
+            <span>ตัวอย่างเครือข่ายใหญ่</span>
+            <button class="btn" onclick="loadBigTemplate('home')" title="บ้านจริง: เราเตอร์ Wi-Fi, ทีวี, เครื่องเล่นเกม, กล้องวงจรปิด, มือถือ — ใช้กับโจทย์เน็ตบ้านมีปัญหา"><i class="fa-solid fa-house-signal"></i> บ้านของฉัน</button>
+            <button class="btn" onclick="loadBigTemplate('floor')" title="อาคารเรียน 4 ห้อง: ห้องเซิร์ฟเวอร์ ห้องคอม 2 ห้อง ห้องพักครู (Wi-Fi)"><i class="fa-solid fa-building"></i> อาคารเรียน 4 ห้อง</button>
+            <button class="btn" onclick="loadBigTemplate('campus')" title="3 อาคาร เชื่อมกันด้วย Fiber Backbone ผ่าน Core Switch"><i class="fa-solid fa-city"></i> วิทยาเขต 3 อาคาร</button>
+          </div>
+          <div class="file-actions">
+            <button class="btn" onclick="exportProject()" title="ดาวน์โหลดงานเป็นไฟล์ .json เพื่อส่งครูหรือเปิดที่เครื่องอื่น"><i class="fa-solid fa-file-arrow-down"></i> ส่งออกไฟล์</button>
+            <button class="btn" onclick="document.getElementById('importFile').click()" title="เปิดไฟล์ .json ที่ส่งออกไว้"><i class="fa-solid fa-file-arrow-up"></i> นำเข้าไฟล์</button>
+            <input type="file" id="importFile" accept=".json,application/json" hidden onchange="importProject(this)">
+          </div>
+          <div class="form-group">
+            <label for="floorTextureSelect">ประเภทพื้นผิว</label>
+            <select id="floorTextureSelect" onchange="changeRoomConfig()">
+              <option value="raised">พื้นยกระดับ Raised Access Floor</option>
+              <option value="epoxy">พื้นอีพ็อกซี่สีเทา</option>
+              <option value="tile">กระเบื้องยางห้องคอมพิวเตอร์</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section catalog-section">
+        <div class="panel-title"><span><i class="fa-solid fa-boxes-stacked"></i> อุปกรณ์และสาย (แบบ Packet Tracer)</span></div>
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="cat-head" id="catHead"></div>
+        <div class="model-list" id="modelList"></div>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title"><span><i class="fa-solid fa-palette"></i> สีของแพ็กเก็ต</span></div>
+        <div class="legend legend-grid" id="legend"></div>
+      </div>
+    </aside>
+
+    <!-- Center Viewport Panel -->
+    <main class="viewport-container">
+      <canvas id="canvas3D"></canvas>
+
+      <!-- แถบควบคุมการจำลอง (เหมือน Realtime / Simulation ของ Packet Tracer) -->
+      <div class="sim-bar">
+        <div class="sim-row">
+          <div class="seg">
+            <button id="simModeRealtime" class="active" onclick="setSimMode('realtime')" title="แพ็กเก็ตวิ่งต่อเนื่องอัตโนมัติ"><i class="fa-solid fa-bolt"></i> Realtime</button>
+            <button id="simModeSim" onclick="setSimMode('sim')" title="หยุดดูทีละขั้นตอน"><i class="fa-solid fa-shoe-prints"></i> Simulation</button>
+          </div>
+          <button class="icon-btn" id="btnPlay" onclick="togglePlay()" title="เล่น / หยุดชั่วคราว" disabled><i class="fa-solid fa-play"></i></button>
+          <button class="icon-btn" id="btnStep" onclick="stepOnce()" title="เดินหน้าทีละขั้น" disabled><i class="fa-solid fa-forward-step"></i></button>
+          <label class="speed-label" for="speedRange"><i class="fa-solid fa-gauge-high"></i></label>
+          <input type="range" id="speedRange" min="0.5" max="3" step="0.25" value="1" oninput="setSpeed(this.value)" title="ความเร็วแอนิเมชัน">
+          <span class="sim-status" id="simStatus">พร้อม</span>
+        </div>
+        <div class="sim-caption" id="simCaption">กด “รันระบบ” หรือพิมพ์คำสั่ง ping ที่แท็บ Console เพื่อดูแพ็กเก็ตวิ่งในห้อง 3D</div>
+      </div>
+
+      <div class="cable-banner" id="cableBanner">
+        <i class="fa-solid fa-plug"></i> <span id="cableBannerText"></span>
+        <button onclick="toggleCableTool(false)" title="ยกเลิก (Esc)"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="port-menu" id="portMenu"></div>
+
+      <div class="tour-banner" id="tourBanner">
+        <i class="fa-solid fa-street-view"></i>
+        <span>เดินด้วย <b>W A S D</b> หรือลูกศร · ลากเมาส์เพื่อหันมอง · คลิกวงแหวนบนพื้นเพื่อวาร์ป · คลิกอุปกรณ์เพื่ออ่านคำอธิบาย</span>
+      </div>
+
+      <div class="info-card" id="infoCard">
+        <button class="info-card-close" onclick="hideInfoCard()" title="ปิด"><i class="fa-solid fa-xmark"></i></button>
+        <strong id="infoCardTitle"></strong>
+        <div id="infoCardBody"></div>
+      </div>
+
+      <div class="view-controls">
+        <div class="drag-hint" id="dragHint"><i class="fa-solid fa-lock"></i> ตำแหน่งล็อกอยู่</div>
+        <button class="icon-btn edit-btn" id="btnEditMode" onclick="setEditMode()" aria-pressed="false" title="แก้ไขตำแหน่ง — ปลดล็อกเพื่อลากย้ายอุปกรณ์ (E)"><i class="fa-solid fa-pen-to-square"></i></button>
+        <button class="icon-btn edit-only" onclick="undoMove()" title="ย้อนตำแหน่งที่ย้ายล่าสุด (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
+        <button class="icon-btn" id="btnCableTool" onclick="toggleCableTool()" title="เครื่องมือเดินสาย: คลิกอุปกรณ์ 2 ตัวเพื่อเชื่อมต่อ"><i class="fa-solid fa-plug"></i></button>
+        <button class="icon-btn" onclick="reset3DCamera()" title="รีเซ็ตกล้อง"><i class="fa-solid fa-arrows-to-dot"></i></button>
+        <button class="icon-btn" onclick="toggleWireframe()" title="Wireframe"><i class="fa-solid fa-border-none"></i></button>
+        <button class="icon-btn" onclick="clearAllDevices()" title="ล้างอุปกรณ์ทั้งหมด"><i class="fa-solid fa-trash-can"></i></button>
+      </div>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar-right glass">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="props" onclick="switchTab('props')">คุณสมบัติ</button>
+        <button class="tab-btn" data-tab="network" onclick="switchTab('network')">เดินสาย</button>
+        <button class="tab-btn" data-tab="sim" onclick="switchTab('sim')">เหตุการณ์</button>
+        <button class="tab-btn" data-tab="console" onclick="switchTab('console')">Console</button>
+        <button class="tab-btn tab-task" data-tab="task" onclick="switchTab('task')"><i class="fa-solid fa-flag-checkered"></i> ภารกิจ</button>
+      </div>
+
+      <div class="tab-content active" id="tabProps">
+        <div id="noSelectNotice" class="empty-note">
+          <i class="fa-solid fa-mouse-pointer"></i>
+          คลิกเลือกอุปกรณ์ในห้อง 3D เพื่อตั้งค่า
+        </div>
+        <div id="propBody" class="prop-body"></div>
+      </div>
+
+      <div class="tab-content" id="tabNetwork">
+        <div class="panel-title"><span><i class="fa-solid fa-plug"></i> เดินสายสัญญาณ</span></div>
+        <div class="form-row">
+          <div class="form-group grow"><label for="connFromSelect">ต้นทาง</label><select id="connFromSelect" onchange="refreshPortSelects()"></select></div>
+          <div class="form-group port"><label for="connFromPort">พอร์ต</label><select id="connFromPort"></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group grow"><label for="connToSelect">ปลายทาง</label><select id="connToSelect" onchange="refreshPortSelects()"></select></div>
+          <div class="form-group port"><label for="connToPort">พอร์ต</label><select id="connToPort"></select></div>
+        </div>
+        <div class="form-group">
+          <label for="connTypeSelect">ประเภทสาย</label>
+          <select id="connTypeSelect" onchange="refreshPortSelects()">
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="connectDevices3D()"><i class="fa-solid fa-link"></i> เชื่อมต่อสาย</button>
+        <p class="hint" id="cableHint"></p>
+        <div>
+          <label class="list-label">รายการสาย</label>
+          <div id="connectionList" class="conn-list"></div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tabSim">
+        <div class="panel-title">
+          <span><i class="fa-solid fa-list-ol"></i> Event List</span>
+          <span class="mini-actions">
+            <button class="mini-btn" onclick="clearEventList()" title="ล้างรายการ"><i class="fa-solid fa-eraser"></i></button>
+            <button class="mini-btn" onclick="resetTables()" title="ล้าง ARP / MAC Table ทุกเครื่อง (เริ่มเรียนรู้ใหม่)"><i class="fa-solid fa-rotate-left"></i></button>
+          </span>
+        </div>
+        <div class="event-list" id="eventList">
+          <div class="empty-note small">ยังไม่มีเหตุการณ์ — ลองกด “รันระบบ”</div>
+        </div>
+        <div class="panel-title"><span><i class="fa-solid fa-layer-group"></i> รายละเอียด PDU (ตามชั้น OSI)</span></div>
+        <div class="pdu-detail" id="pduDetail">
+          <div class="empty-note small">คลิกแถวใน Event List เพื่อดูข้อมูลในแต่ละชั้น</div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tabTask">
+        <div id="taskPanel" class="task-panel"></div>
+      </div>
+
+      <div class="tab-content" id="tabConsole">
+        <div class="panel-title"><span><i class="fa-solid fa-terminal"></i> Command Line</span></div>
+        <div class="form-group">
+          <label for="cliDeviceSelect">พิมพ์คำสั่งที่อุปกรณ์</label>
+          <select id="cliDeviceSelect" onchange="updatePrompt()"></select>
+        </div>
+        <div class="terminal-box" id="termOutput">
+          <div class="term-line info">[SYSTEM] พิมพ์ help เพื่อดูคำสั่งที่ใช้ได้</div>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-prompt" id="cmdPrompt">&gt;</span>
+          <input type="text" id="cmdInput" placeholder="ping 192.168.1.11" autocomplete="off" spellcheck="false" onkeydown="handleCmdKey(event)">
+          <button class="btn" onclick="executeCommand()">ส่ง</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="status-indicator"><div class="dot-live"></div><span id="statusText">3D Active</span></div>
+    <div id="deviceCount">0 อุปกรณ์ · 0 สาย</div>
+    <button class="task-pill" id="taskPill" onclick="switchTab('task')" hidden></button>
+    <div>SimuCore Engine v3.0</div>
+  </footer>
+</div>
+
+<!-- Simulated Browser Modal -->
+<div class="modal-overlay" id="simBrowserModalOverlay" onclick="handleModalOverlayClick(event)">
+  <div class="sim-browser">
+    <div class="browser-bar">
+      <div class="browser-bar-left">
+        <div class="browser-dots">
+          <div class="dot red" onclick="closeBrowserSim()"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <form class="browser-url" onsubmit="browserGo(event)">
+          <i class="fa-solid fa-globe"></i>
+          <input type="text" id="browserUrlInput" spellcheck="false" autocomplete="off">
+          <button type="submit" title="ไป"><i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+      </div>
+      <button class="browser-close-btn" onclick="closeBrowserSim()">ปิด</button>
+    </div>
+    <div class="browser-client">
+      <label for="browserClientSelect">เปิดเบราว์เซอร์จากเครื่อง</label>
+      <select id="browserClientSelect"></select>
+    </div>
+    <div class="browser-body" id="browserBody"></div>
+  </div>
+</div>
+
+<!-- Info Modal (บทเรียน / ข้อความ) -->
+<div class="modal-overlay" id="infoModal" onclick="if(event.target.id==='infoModal') closeInfoModal()">
+  <div class="info-modal">
+    <div class="info-modal-head">
+      <strong id="infoModalTitle"></strong>
+      <button class="icon-btn" onclick="closeInfoModal()" title="ปิด"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="info-modal-body" id="infoModalBody"></div>
+  </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="device-catalog.js"></script>
+<script src="network-engine.js"></script>
+<script src="activities.js"></script>
+<script src="ui.js"></script>
+<script src="workspace.js"></script>
+<script src="cable-route.js"></script>
+<script src="lab-plus.js"></script>
+<script src="life-plus.js"></script>
+</body>
+</html>

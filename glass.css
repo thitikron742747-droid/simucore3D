@@ -1,0 +1,379 @@
+/* ==========================================================================
+   SimuCore 3D — ธีม Liquid Glass (หน้าหลัก + หน้าเข้าสู่ระบบ)
+   ใช้กับ <body class="glass-theme"> โหลดหลัง style.css
+   ========================================================================== */
+@property --spin { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+@property --ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+.glass-theme {
+  --f-head: 'Prompt', 'IBM Plex Sans Thai', sans-serif;
+  --c-cyan: #22d3ee;
+  --c-blue: #3b82f6;
+  --c-indigo: #6366f1;
+  --c-violet: #a855f7;
+  --c-pink: #ec4899;
+  --c-mint: #34d399;
+  --c-gold: #fbbf24;
+  --signal: #22d3ee;
+  --g-text: #f4f7ff;
+  --g-muted: rgba(226, 232, 255, 0.72);
+  --g-dim: rgba(226, 232, 255, 0.5);
+  --g-line: rgba(255, 255, 255, 0.16);
+  --g-line-hi: rgba(255, 255, 255, 0.32);
+  --r-glass: 24px;
+  background: #060818;
+  color: var(--g-text);
+}
+.glass-theme::before { display: none; }
+.glass-theme { overflow-x: hidden; }
+
+/* --------------------- พื้นหลัง Aurora: ก้อนสีลอยไหล --------------------- */
+.aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; background: radial-gradient(120% 90% at 50% 0%, #121a46 0%, #070a1d 55%, #04050f 100%); }
+.aurora i { position: absolute; border-radius: 50%; opacity: 0.75; mix-blend-mode: screen; will-change: transform; }
+.aurora i:nth-child(1) { width: 62vmax; height: 62vmax; left: -18vmax; top: -22vmax; background: radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.55), rgba(34, 211, 238, 0) 62%); animation: drift-a 22s ease-in-out infinite alternate; }
+.aurora i:nth-child(2) { width: 58vmax; height: 58vmax; right: -20vmax; top: -10vmax; background: radial-gradient(circle, rgba(168, 85, 247, 0.55), rgba(168, 85, 247, 0) 62%); animation: drift-b 26s ease-in-out infinite alternate; }
+.aurora i:nth-child(3) { width: 54vmax; height: 54vmax; left: 18vmax; bottom: -30vmax; background: radial-gradient(circle, rgba(236, 72, 153, 0.42), rgba(236, 72, 153, 0) 62%); animation: drift-c 30s ease-in-out infinite alternate; }
+.aurora i:nth-child(4) { width: 44vmax; height: 44vmax; right: 4vmax; bottom: -16vmax; background: radial-gradient(circle, rgba(59, 130, 246, 0.5), rgba(59, 130, 246, 0) 62%); animation: drift-a 24s ease-in-out infinite alternate-reverse; }
+.aurora i:nth-child(5) { width: 30vmax; height: 30vmax; left: 38vmax; top: 18vmax; background: radial-gradient(circle, rgba(52, 211, 153, 0.28), rgba(52, 211, 153, 0) 62%); animation: drift-b 20s ease-in-out infinite alternate-reverse; }
+.aurora::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px); background-size: 26px 26px; mask-image: linear-gradient(to bottom, #000 0%, transparent 80%); }
+@keyframes drift-a { 0% { transform: translate(0, 0) scale(1) rotate(0deg); } 50% { transform: translate(8vmax, 6vmax) scale(1.12) rotate(120deg); } 100% { transform: translate(-4vmax, 10vmax) scale(0.94) rotate(240deg); } }
+@keyframes drift-b { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-10vmax, 8vmax) scale(1.15); } 100% { transform: translate(-2vmax, -6vmax) scale(0.9); } }
+@keyframes drift-c { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-12vmax, -10vmax) scale(1.2); } }
+
+/* ------------------------------- กระจก ------------------------------- */
+.glass-theme .glass,
+.glass-theme .topbar,
+.glass-theme .sidenav,
+.glass-theme .projects,
+.glass-theme dialog,
+.glass-theme .menu,
+.glass-theme .sc-dialog__panel,
+.glass-theme .sc-toast,
+.glass-theme .hs,
+.glass-theme .auth__card {
+  position: relative;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.035) 55%, rgba(255, 255, 255, 0.07));
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid var(--g-line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.05), 0 24px 60px rgba(2, 4, 20, 0.45);
+  color: var(--g-text);
+}
+/* คืนตำแหน่งเดิมให้ส่วนที่ไม่ใช่ position: relative (กฎกระจกด้านบนเขียนทับไว้) */
+.glass-theme .topbar { position: sticky; }
+.glass-theme .sidenav { position: sticky; }
+.glass-theme .menu { position: absolute; }
+.glass-theme dialog:modal { position: fixed; }
+
+/* ประกายแสงวาวตามตำแหน่งเมาส์ (ตั้ง --mx / --my จาก main.js) */
+.glass-theme .glass::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(420px circle at var(--mx, 30%) var(--my, -20%), rgba(255, 255, 255, 0.16), transparent 45%);
+  transition: opacity 0.3s;
+}
+/* ขอบสะท้อนแสงแบบแก้ว: ไล่แสงที่มุมบนซ้ายและล่างขวา */
+.glass-theme .glass::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 32%, rgba(255, 255, 255, 0) 68%, rgba(255, 255, 255, 0.35));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+
+/* ------------------------------ แถบบน / เมนูข้าง ------------------------------ */
+.glass-theme .topbar { top: 12px; margin: 12px 16px 0; height: 62px; border-radius: 20px; }
+.glass-theme .search { background: rgba(255, 255, 255, 0.07); border-color: var(--g-line); border-radius: 999px; color: var(--g-dim); }
+.glass-theme .search:focus-within { border-color: rgba(34, 211, 238, 0.7); box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15); }
+.glass-theme .search input::placeholder { color: var(--g-dim); }
+.glass-theme .brand__name { font-family: var(--f-head); }
+.glass-theme .brand__name b { background: linear-gradient(90deg, var(--c-cyan), var(--c-violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.glass-theme .brand__mark { filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.45)); }
+.glass-theme .user__btn { border-radius: 999px; padding-right: 14px; }
+.glass-theme .user__btn:hover, .glass-theme .user__btn[aria-expanded="true"] { background: rgba(255, 255, 255, 0.1); border-color: var(--g-line); }
+.glass-theme .avatar { border-radius: 50%; border: none; color: #fff; background: conic-gradient(from 200deg, var(--c-cyan), var(--c-violet), var(--c-pink), var(--c-cyan)); box-shadow: 0 0 16px rgba(168, 85, 247, 0.45); }
+.glass-theme .user__role, .glass-theme .menu__meta { color: var(--g-muted); }
+.glass-theme .menu { border-radius: 18px; }
+.glass-theme .menu button:hover { background: rgba(255, 255, 255, 0.1); }
+
+.glass-theme .layout { min-height: calc(100vh - 86px); grid-template-columns: 236px 1fr; }
+.glass-theme .sidenav { top: 92px; height: auto; max-height: calc(100vh - 110px); margin: 16px 0 16px 16px; border-radius: 22px; padding: 14px 10px; align-self: start; }
+.glass-theme .nav-item { color: var(--g-muted); border-radius: 14px; }
+.glass-theme .nav-item:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.glass-theme .nav-item.is-active { background: linear-gradient(120deg, rgba(34, 211, 238, 0.22), rgba(168, 85, 247, 0.22)); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+.glass-theme .nav-item.is-active::before { background: linear-gradient(var(--c-cyan), var(--c-violet)); }
+.glass-theme .sidenav__foot { border-color: var(--g-line); border-radius: 14px; color: var(--g-muted); background: rgba(255, 255, 255, 0.04); margin-top: 18px; }
+
+/* --------------------------------- ปุ่ม --------------------------------- */
+.glass-theme .sc-btn {
+  position: relative; overflow: hidden; border-radius: 999px; min-height: 44px; padding: 0 20px;
+  font-family: var(--f-head); font-weight: 600;
+  background: rgba(255, 255, 255, 0.09); border: 1px solid var(--g-line); color: #fff;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+.glass-theme .sc-btn:hover { background: rgba(255, 255, 255, 0.16); border-color: var(--g-line-hi); transform: translateY(-1px); }
+.glass-theme .sc-btn--primary {
+  border: none; color: #fff;
+  background: linear-gradient(115deg, var(--c-cyan), var(--c-indigo) 45%, var(--c-pink));
+  background-size: 200% 100%;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: background-position 0.6s var(--ease), transform 0.2s var(--ease), box-shadow 0.3s;
+}
+.glass-theme .sc-btn--primary:hover { background-position: 100% 0; box-shadow: 0 14px 38px rgba(236, 72, 153, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+/* แสงวาบเลื่อนผ่านปุ่ม */
+.glass-theme .sc-btn--primary::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent); transform: skewX(-20deg); }
+.glass-theme .sc-btn--primary:hover::after { animation: shine 0.8s var(--ease); }
+@keyframes shine { to { left: 130%; } }
+.glass-theme .sc-btn--danger { color: #ffb3c7; border-color: rgba(236, 72, 153, 0.5); background: rgba(236, 72, 153, 0.1); }
+
+/* ------------------- Hero: ฉาก 3D หมุน (วงโคจรเครือข่าย) ------------------- */
+.glass-theme .hero { padding: 26px 0 30px; gap: 24px; }
+.glass-theme .hero__greet { color: var(--g-muted); display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--g-line); }
+.glass-theme .hero h1 { font-weight: 700; font-size: clamp(34px, 4vw, 56px); line-height: 1.14; }
+.glass-theme .hero h1 .grad {
+  background: linear-gradient(100deg, #7df9ff, var(--c-cyan) 20%, var(--c-violet) 55%, var(--c-pink) 80%, #ffd27d);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: grad-flow 8s ease-in-out infinite alternate;
+}
+@keyframes grad-flow { to { background-position: 100% 0; } }
+.glass-theme .hero p { color: var(--g-muted); }
+.glass-theme .hero__facts { gap: 12px; }
+.glass-theme .hero__facts div { padding: 12px 18px; border-radius: 18px; min-width: 112px; color: var(--g-muted); }
+.glass-theme .hero__facts b { font-size: 30px; background: linear-gradient(120deg, #fff, #b9f4ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.orbit { position: relative; height: 500px; min-width: 0; perspective: 1200px; }
+.orbit__scene {
+  --tx: -8deg; --ty: 0deg;
+  /* วางแบบ absolute เพื่อไม่ให้ฉากขนาด 460px ดันความกว้างของหน้าบนจอเล็ก */
+  position: absolute; left: 50%; top: 50%; margin: -230px 0 0 -230px;
+  width: 460px; height: 460px; transform-style: preserve-3d;
+  transform: rotateX(var(--tx)) rotateY(var(--ty));
+  transition: transform 0.6s var(--ease);
+}
+.core { position: absolute; left: 50%; top: 50%; width: 124px; height: 124px; margin: -62px 0 0 -62px; transform-style: preserve-3d; }
+.core__orb {
+  position: absolute; inset: 0; border-radius: 50%; overflow: hidden; isolation: isolate;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.25) 14%, transparent 32%),
+    radial-gradient(circle at 70% 78%, rgba(236, 72, 153, 0.75), transparent 52%),
+    radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.65), rgba(34, 211, 238, 0.55) 60%, rgba(34, 211, 238, 0.2) 100%);
+  box-shadow: 0 0 60px rgba(34, 211, 238, 0.55), 0 0 120px rgba(168, 85, 247, 0.4), inset 0 0 30px rgba(255, 255, 255, 0.35);
+  animation: orb-breathe 4.5s ease-in-out infinite;
+}
+/* ของเหลวหมุนวนอยู่ในลูกแก้ว */
+.core__orb::before { content: ''; position: absolute; inset: -40%; background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.35), transparent 30%, rgba(34, 211, 238, 0.5), transparent 60%, rgba(236, 72, 153, 0.45), transparent); animation: swirl 7s linear infinite; mix-blend-mode: overlay; }
+.core__icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 40px; color: #fff; text-shadow: 0 0 18px rgba(255, 255, 255, 0.9); }
+.core__halo { position: absolute; inset: -26px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.25); animation: halo 3s ease-out infinite; }
+.core__halo:nth-child(2) { animation-delay: 1.5s; }
+@keyframes orb-breathe { 50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(34, 211, 238, 0.7), 0 0 150px rgba(236, 72, 153, 0.45), inset 0 0 30px rgba(255, 255, 255, 0.35); } }
+@keyframes swirl { to { transform: rotate(360deg); } }
+@keyframes halo { from { transform: scale(0.85); opacity: 0.9; } to { transform: scale(1.7); opacity: 0; } }
+
+.ring {
+  --a: 72deg; --b: 0deg; --r: 190px; --dur: 26s;
+  position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d;
+  transform: rotateY(var(--b)) rotateX(var(--a));
+}
+.ring__spin { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateZ(var(--spin)); animation: ring-spin var(--dur) linear infinite; }
+.ring--rev .ring__spin { animation-direction: reverse; }
+@keyframes ring-spin { to { --spin: 360deg; } }
+.ring__track {
+  position: absolute; left: calc(var(--r) * -1); top: calc(var(--r) * -1); width: calc(var(--r) * 2); height: calc(var(--r) * 2);
+  border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 22px rgba(34, 211, 238, 0.25), inset 0 0 22px rgba(168, 85, 247, 0.2);
+}
+.ring__track::before { content: ''; position: absolute; inset: -1.5px; border-radius: 50%; padding: 1.5px; background: conic-gradient(from 0deg, transparent 0 60%, var(--glow, var(--c-cyan)) 85%, #fff 90%, transparent 92%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+.sat { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-style: preserve-3d; transform: rotateZ(var(--p)) translateX(var(--r)); }
+/* หันหน้าเข้าหากล้องเสมอ: หมุนกลับทุกการหมุนของวงโคจร */
+.sat__face {
+  position: absolute; left: -26px; top: -26px; width: 52px; height: 52px; border-radius: 16px;
+  display: grid; place-items: center; font-size: 20px; color: #fff;
+  transform: rotateZ(calc((var(--p) + var(--spin)) * -1)) rotateX(calc(var(--a) * -1)) rotateY(calc(var(--b) * -1));
+  /* ไม่ใช้ backdrop-filter ในฉาก 3D เพราะทำให้เบราว์เซอร์เรียงลำดับหน้า-หลังผิด */
+  background: linear-gradient(140deg, rgba(120, 140, 255, 0.42), rgba(20, 26, 70, 0.78));
+  border: 1.5px solid color-mix(in srgb, var(--glow, #22d3ee) 70%, #fff);
+  /* เงาด้านนอกบนเลเยอร์ 3D จะเป็นสี่เหลี่ยม จึงใช้เฉพาะแสงด้านใน */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 0 18px color-mix(in srgb, var(--glow, #22d3ee) 45%, transparent);
+}
+.sat__face i { color: var(--glow, #fff); filter: drop-shadow(0 0 6px var(--glow, #fff)); }
+.sat__face small { position: absolute; top: 56px; white-space: nowrap; font: 600 11px var(--f-mono); color: rgba(255, 255, 255, 0.85); text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6); }
+.pkt { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle, #fff 0 18%, var(--glow, #fff) 30%, transparent 70%); }
+.orbit__shadow { position: absolute; bottom: 8px; left: 50%; width: 360px; height: 46px; margin-left: -180px; border-radius: 50%; background: radial-gradient(closest-side, rgba(34, 211, 238, 0.35), transparent); filter: blur(6px); }
+
+/* ---------------------------- หัวข้อส่วน / Live ---------------------------- */
+.glass-theme .section { margin-top: 40px; }
+.glass-theme .section__head h2 { font-size: 26px; font-weight: 700; }
+.glass-theme .section__head p, .glass-theme .count { color: var(--g-muted); }
+.glass-theme .count { padding: 6px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--g-line); font-size: 12px; }
+.live { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 22px; align-items: center; padding: 22px; border-radius: var(--r-glass); }
+.live h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.live p { color: var(--g-muted); font-size: 15px; }
+.live__legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.live__legend span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--g-line); font-size: 13px; }
+.live__legend i { width: 10px; height: 10px; border-radius: 3px; box-shadow: 0 0 10px currentColor; }
+.glass-theme .topo { border-radius: 18px; border-color: var(--g-line); background: rgba(5, 8, 24, 0.45); }
+.glass-theme .topo__caption { background: rgba(255, 255, 255, 0.05); border-top-color: var(--g-line); }
+.glass-theme .topo .node-ip { fill: rgba(226, 232, 255, 0.7); }
+.glass-theme .topo .cable { stroke: rgba(255, 255, 255, 0.25); }
+.glass-theme .topo .cable.is-hot { stroke: rgba(255, 255, 255, 0.55); }
+
+/* --------------------------- การ์ดแล็บ (เอียงตามเมาส์) --------------------------- */
+.glass-theme .labs { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; background: none; border: none; overflow: visible; perspective: 1200px; }
+.glass-theme .lab {
+  --rx: 0deg; --ry: 0deg; --accent: var(--c-cyan);
+  display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 22px; border-top: none;
+  border-radius: var(--r-glass); transform: rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d;
+  transition: transform 0.25s var(--ease), box-shadow 0.3s, background 0.3s;
+}
+.glass-theme .lab:hover { background: linear-gradient(140deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05) 55%, rgba(255, 255, 255, 0.1)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 30px 70px rgba(2, 4, 20, 0.55), 0 0 40px color-mix(in srgb, var(--accent) 35%, transparent); }
+/* ขอบแสงหลากสีวิ่งหมุนรอบการ์ดตอนชี้ */
+.lab__glow { position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity 0.35s;
+  background: conic-gradient(from var(--ang), transparent 0 55%, var(--accent) 70%, #fff 76%, var(--c-pink) 82%, transparent 92%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: ang 3.2s linear infinite; }
+.glass-theme .lab:hover .lab__glow { opacity: 1; }
+@keyframes ang { to { --ang: 360deg; } }
+.lab__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; transform: translateZ(30px); }
+.lab__icon {
+  width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; font-size: 24px; color: #fff;
+  background: linear-gradient(140deg, color-mix(in srgb, var(--accent) 80%, #fff), color-mix(in srgb, var(--accent) 45%, transparent));
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--accent) 55%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: transform 0.4s var(--ease);
+}
+.glass-theme .lab:hover .lab__icon { transform: rotate(-8deg) scale(1.08); }
+.lab__no { font: 700 34px/1 var(--f-head); color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.35); }
+.glass-theme .lab h3 { font-size: 19px; font-weight: 700; transform: translateZ(24px); }
+.glass-theme .lab p { color: var(--g-muted); font-size: 14.5px; margin-bottom: 4px; flex: 1; transform: translateZ(16px); }
+.glass-theme .chips { margin: 12px 0 18px; }
+.glass-theme .chip { border-radius: 999px; background: rgba(255, 255, 255, 0.07); border-color: var(--g-line); color: var(--g-muted); }
+.glass-theme .lab__side { justify-content: space-between; transform: translateZ(22px); }
+.glass-theme .lab__task { color: var(--c-gold); }
+
+/* ------------------------------- โครงการ ------------------------------- */
+.glass-theme .projects { border-radius: var(--r-glass); }
+.glass-theme .project { border-top-color: var(--g-line); }
+.glass-theme .project__row { padding: 16px 22px; }
+.glass-theme .project:hover { background: rgba(255, 255, 255, 0.05); }
+.glass-theme .project__meta { color: var(--g-muted); }
+.glass-theme .project .led { background: var(--c-mint); box-shadow: 0 0 10px var(--c-mint); }
+.glass-theme .icon-btn { border-radius: 50%; border-color: var(--g-line); color: var(--g-muted); background: rgba(255, 255, 255, 0.05); }
+.glass-theme .empty { color: var(--g-muted); }
+.glass-theme .skeleton { border-top-color: var(--g-line); background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent) transparent; background-size: 200% 100%; }
+
+/* ------------------------------ หน้าต่าง / ฟอร์ม ------------------------------ */
+.glass-theme dialog { border-radius: 26px; }
+.glass-theme dialog::backdrop { background: rgba(4, 6, 20, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.glass-theme .dialog__head p, .glass-theme .field > label, .glass-theme .field__label, .glass-theme .field__hint { color: var(--g-muted); }
+.glass-theme .field input, .glass-theme .field select { border-radius: 14px; background: rgba(255, 255, 255, 0.07); border-color: var(--g-line); color: #fff; }
+.glass-theme .field select option { background: #141a3a; }
+.glass-theme .field input:focus, .glass-theme .field select:focus { border-color: rgba(34, 211, 238, 0.8); box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.18); }
+.glass-theme .tabs { border-radius: 999px; background: rgba(255, 255, 255, 0.06); border-color: var(--g-line); }
+.glass-theme .tabs button { border-radius: 999px; color: var(--g-muted); }
+.glass-theme .tabs button[aria-selected="true"] { background: linear-gradient(115deg, rgba(34, 211, 238, 0.35), rgba(168, 85, 247, 0.35)); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+.glass-theme .reports { border-color: var(--g-line); border-radius: 16px; }
+.glass-theme .report { border-top-color: var(--g-line); }
+.glass-theme .seg span { border-radius: 14px; background: rgba(255, 255, 255, 0.06); border-color: var(--g-line); }
+.glass-theme .seg input:checked + span { border-color: rgba(34, 211, 238, 0.8); background: rgba(34, 211, 238, 0.14); }
+.glass-theme .dialog__close { border-radius: 50%; }
+.glass-theme .sc-dialog { background: rgba(4, 6, 20, 0.5); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.glass-theme .sc-dialog__panel { border-radius: 24px; }
+.glass-theme .sc-dialog__msg { color: var(--g-muted); }
+.glass-theme .sc-toast { border-radius: 16px; border-left-width: 1px; }
+.glass-theme .sc-toast--ok { box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.5), 0 18px 40px rgba(2, 4, 20, 0.5); }
+.glass-theme .sc-toast--err { box-shadow: 0 0 0 1px rgba(236, 72, 153, 0.6), 0 18px 40px rgba(2, 4, 20, 0.5); }
+.glass-theme .sc-loader { background: rgba(5, 8, 24, 0.72); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.glass-theme .sc-wire__port { border-radius: 8px; background: rgba(255, 255, 255, 0.1); border-color: var(--g-line); }
+.glass-theme .sc-wire__cable { background: rgba(255, 255, 255, 0.2); }
+.glass-theme .form-error { border-radius: 14px; }
+
+/* ------------------------------ หน้าเข้าสู่ระบบ ------------------------------ */
+.glass-theme .auth__story { border-right: none; }
+.glass-theme .auth__story h1 { font-weight: 700; }
+.glass-theme .auth__story h1 .nw:last-child { background: linear-gradient(100deg, var(--c-cyan), var(--c-violet) 60%, var(--c-pink)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.glass-theme .auth__story p, .glass-theme .auth__points li { color: var(--g-muted); }
+.glass-theme .auth__card { padding: 28px; border-radius: 28px; }
+.glass-theme .hs { border-radius: 24px; }
+.glass-theme .hs__end i { border-radius: 12px; background: rgba(255, 255, 255, 0.1); border-color: var(--g-line); }
+.glass-theme .hs__track { background: rgba(255, 255, 255, 0.2); }
+.glass-theme .hs__status { border-top-color: var(--g-line); color: var(--g-muted); }
+.glass-theme .auth__alt::before, .glass-theme .auth__alt::after { border-top-color: var(--g-line); }
+
+/* ------------------------------- จอเล็ก ------------------------------- */
+@media (max-width: 1080px) {
+  .orbit { height: 400px; }
+  .orbit__scene { transform: scale(0.85) rotateX(var(--tx)) rotateY(var(--ty)); }
+}
+@media (max-width: 900px) {
+  .glass-theme .layout { grid-template-columns: 1fr; }
+  .glass-theme .sidenav { position: fixed; top: auto; bottom: 10px; left: 10px; right: 10px; margin: 0; max-height: none; border-radius: 22px; }
+  .glass-theme .sidenav__foot { display: none; }
+  .glass-theme .topbar { margin: 8px 8px 0; top: 8px; }
+  .live { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .orbit { height: 330px; }
+  .orbit__scene { transform: scale(0.66) rotateX(var(--tx)) rotateY(var(--ty)); }
+  .glass-theme .labs { grid-template-columns: 1fr; }
+  .glass-theme .lab__side { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora i, .core__orb, .core__orb::before, .core__halo, .ring__spin, .lab__glow, .glass-theme .hero h1 .grad { animation: none !important; }
+  .glass-theme .lab { transform: none !important; }
+}
+
+/* ------------------------- ความก้าวหน้า (หน้าหลัก) ------------------------- */
+.glass-theme .prog { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(260px, 1.3fr) minmax(220px, 1fr); gap: 16px; }
+.glass-theme .prog > .skeleton { grid-column: 1 / -1; height: 150px; }
+.glass-theme .prog > div { border-radius: 24px; padding: 20px; }
+.glass-theme .prog__card { display: flex; align-items: center; gap: 18px; }
+.glass-theme .prog__medal {
+  flex: none; width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.75), transparent 34%), conic-gradient(from 200deg, #fbbf24, #ec4899, #a855f7, #22d3ee, #fbbf24);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.12), 0 12px 30px rgba(236, 72, 153, 0.45);
+}
+.glass-theme .prog__medal b { font: 700 32px 'Prompt', sans-serif; color: #fff; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+.glass-theme .prog__lv { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+.glass-theme .prog__lv small { font-size: 12px; color: rgba(226, 232, 255, 0.65); }
+.glass-theme .prog__lv strong { font: 600 20px 'Prompt', sans-serif; }
+.glass-theme .prog__lv span { font-size: 12.5px; color: rgba(226, 232, 255, 0.75); }
+.glass-theme .prog__bar { height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; margin: 4px 0; }
+.glass-theme .prog__bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #fbbf24, #ec4899, #a855f7, #22d3ee); box-shadow: 0 0 14px rgba(236, 72, 153, 0.6); }
+.glass-theme .prog__title { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.glass-theme .prog__title b { font: 600 15px 'Prompt', sans-serif; }
+.glass-theme .prog__title span { font: 600 13px 'JetBrains Mono', monospace; color: #fde68a; }
+.glass-theme .prog__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; }
+.glass-theme .medal {
+  --b: #475569; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; font-size: 15px; color: rgba(255, 255, 255, 0.55);
+  background: linear-gradient(140deg, color-mix(in srgb, var(--b) 35%, transparent), color-mix(in srgb, var(--b) 12%, transparent)); border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.glass-theme .medal.is-on { color: #fff; background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.6), transparent 34%), linear-gradient(140deg, var(--b), color-mix(in srgb, var(--b) 45%, #1e1b4b)); box-shadow: 0 6px 16px color-mix(in srgb, var(--b) 45%, transparent); border-color: transparent; }
+.glass-theme .prog__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.glass-theme .prog__list li { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); font-size: 13.5px; }
+.glass-theme .prog__list li.is-me { background: linear-gradient(120deg, rgba(34, 211, 238, 0.25), rgba(168, 85, 247, 0.2)); }
+.glass-theme .prog__list .rank { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 600 12px 'JetBrains Mono', monospace; background: rgba(255, 255, 255, 0.1); }
+.glass-theme .prog__list li:first-child .rank { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #3b2300; }
+.glass-theme .prog__list .who { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.glass-theme .prog__list em { font: 600 12.5px 'JetBrains Mono', monospace; font-style: normal; color: #fde68a; }
+.glass-theme .prog__note { margin: 0; font-size: 12.5px; color: rgba(226, 232, 255, 0.65); display: block; margin-top: 8px; }
+.glass-theme a.nav-item { text-decoration: none; }
+@media (max-width: 1100px) { .glass-theme .prog { grid-template-columns: 1fr; } }
+.nav-item[hidden], .menu button[hidden] { display: none !important; }
+
+/* --------------------------- เลือกห้องเรียน --------------------------- */
+.rooms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.glass-theme .room { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; align-items: center; padding: 20px; border-radius: var(--r-glass); text-decoration: none; color: var(--g-text); transition: transform 0.25s, box-shadow 0.25s; }
+.glass-theme .room:hover { transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 30px 70px rgba(2, 4, 20, 0.55), 0 0 40px color-mix(in srgb, var(--accent) 30%, transparent); }
+.glass-theme .room:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.room__art { display: grid; place-items: center; aspect-ratio: 3 / 2; border-radius: 18px; background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 22%, transparent), rgba(0, 0, 0, 0.25)); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+.room__art svg { width: 88%; height: auto; }
+.room__bulb { fill: #fbbf24; animation: roomBulb 2s infinite; }
+@keyframes roomBulb { 0%, 40% { fill: #475569; } 55%, 95% { fill: #fde047; filter: drop-shadow(0 0 6px #fbbf24); } }
+.room__body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.room__body small { color: var(--g-dim); font-size: 12.5px; }
+.room__body b { font: 700 21px var(--f-head); }
+.room__body > span { color: var(--g-muted); font-size: 14px; line-height: 1.55; }
+.room__body em { font-style: normal; color: var(--accent); font-weight: 600; font-size: 14px; margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; }
+@media (max-width: 900px) { .rooms { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .glass-theme .room { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .room__bulb { animation: none; fill: #fde047; } .room__dot { display: none; } }

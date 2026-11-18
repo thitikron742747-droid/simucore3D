@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#060818">
+  <title>SimuCore 3D | แดชบอร์ดครู</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="glass.css">
+  <link rel="stylesheet" href="teacher.css">
+  <script src="config.js"></script>
+  <script src="store.js"></script>
+  <script>Store.requireLogin();</script>
+</head>
+<body class="glass-theme">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <header class="topbar t-top">
+    <a href="index.html" class="brand" aria-label="กลับหน้าหลัก SimuCore 3D">
+      <svg class="brand__mark" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="5" fill="#2c3442" stroke="#3a4454"/><rect x="6" y="11" width="9" height="8" rx="1.5" fill="#1b2029" stroke="#6b778a"/><rect x="19" y="11" width="9" height="8" rx="1.5" fill="#1b2029" stroke="#6b778a"/><circle cx="10.5" cy="24" r="1.8" fill="#3ddc84"/><circle cx="23.5" cy="24" r="1.8" fill="#38c6f4"/></svg>
+      <span class="brand__name">Simu<b>Core</b> 3D</span>
+    </a>
+    <div class="t-title">
+      <h1>แดชบอร์ดครู</h1>
+      <span class="t-live" id="liveText"><span class="led"></span> กำลังเชื่อมต่อ…</span>
+    </div>
+    <a class="sc-btn sc-btn--ghost" href="index.html"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
+  </header>
+
+  <main class="t-main" id="main">
+    <div class="t-tools glass">
+      <label class="t-field"><span>ห้องเรียน</span><select id="classSel"><option value="">ทุกห้อง</option></select></label>
+      <label class="t-field t-grow"><span>ค้นหานักเรียน</span><input id="searchBox" type="search" placeholder="ชื่อ หรือ รหัสนักเรียน"></label>
+      <button class="sc-btn sc-btn--ghost" id="refreshBtn"><i class="fa-solid fa-rotate"></i> รีเฟรช</button>
+      <button class="sc-btn sc-btn--primary" id="csvBtn"><i class="fa-solid fa-file-csv"></i> ส่งออก CSV</button>
+    </div>
+
+    <section class="t-stats" id="stats" aria-label="สรุปภาพรวม"></section>
+
+    <section class="t-labs glass" aria-labelledby="labsTitle">
+      <div class="t-head"><h2 id="labsTitle">ความคืบหน้ารายบทเรียน</h2><span>% นักเรียนที่ทำภารกิจครบ 100%</span></div>
+      <div class="t-bars" id="labBars"></div>
+    </section>
+
+    <section class="t-table glass" aria-labelledby="tableTitle">
+      <div class="t-head"><h2 id="tableTitle">นักเรียน</h2><span id="countText"></span></div>
+      <div class="t-scroll">
+        <table>
+          <thead><tr id="theadRow"></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p class="t-note" id="modeNote"></p>
+    </section>
+  </main>
+
+  <dialog id="studentDialog" aria-labelledby="stTitle" style="width:min(640px, calc(100vw - 32px))">
+    <div class="dialog__head">
+      <div><h2 id="stTitle"></h2><p id="stSub"></p></div>
+      <button type="button" class="dialog__close" data-close aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="stBody"></div>
+  </dialog>
+
+  <script src="activities.js"></script>
+  <script src="ui.js"></script>
+  <script src="teacher.js"></script>
+</body>
+</html>

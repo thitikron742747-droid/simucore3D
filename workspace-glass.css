@@ -1,0 +1,284 @@
+/* ==========================================================================
+   SimuCore 3D — ห้องแล็บแบบ Liquid Glass
+   ใช้กับ <body class="glass-theme ws-glass"> โหลดหลัง workspace.css และ glass.css
+   แผงทั้งหมดเป็นกระจกลอยเหนือพื้นหลัง Aurora ห้อง 3D โปร่งให้เห็นแสงด้านหลัง
+   ========================================================================== */
+.ws-glass {
+  --ws-gap: 10px;
+  --ws-r: 20px;
+  --font-kanit: 'IBM Plex Sans Thai', 'Prompt', sans-serif;
+  --text-main: #f4f7ff;
+  --text-muted: rgba(226, 232, 255, 0.68);
+  --border-color: rgba(255, 255, 255, 0.16);
+  --accent-cyan: #22d3ee;
+  --accent-green: #34d399;
+  --accent-orange: #fbbf24;
+  --accent-red: #fb7185;
+  --bg-main: rgba(6, 9, 30, 0.55);
+  --bg-panel: transparent;
+  --bg-card: rgba(255, 255, 255, 0.07);
+}
+
+/* ------------------------------ โครงหน้า ------------------------------ */
+.ws-glass .app-container { grid-template-rows: 62px minmax(0, 1fr) 34px; gap: var(--ws-gap); padding: var(--ws-gap); height: 100vh; }
+.ws-glass .main-workspace { gap: var(--ws-gap); grid-template-columns: 290px minmax(0, 1fr) 350px; min-height: 0; }
+
+/* แผงกระจกหลัก */
+.ws-glass header,
+.ws-glass .sidebar-left,
+.ws-glass .sidebar-right,
+.ws-glass footer,
+.ws-glass .sim-bar,
+.ws-glass .view-controls,
+.ws-glass .tour-banner,
+.ws-glass .info-card,
+.ws-glass .cable-banner,
+.ws-glass .port-menu,
+.ws-glass .sim-browser,
+.ws-glass .info-modal {
+  position: relative;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.035) 55%, rgba(255, 255, 255, 0.07));
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 -1px 0 rgba(255, 255, 255, 0.05), 0 20px 50px rgba(2, 4, 20, 0.45);
+  color: var(--text-main);
+}
+.ws-glass .sim-bar, .ws-glass .view-controls, .ws-glass .tour-banner, .ws-glass .info-card, .ws-glass .cable-banner, .ws-glass .port-menu { position: absolute; }
+.ws-glass header { border-radius: var(--ws-r); padding: 0 12px 0 16px; z-index: 20; }
+.ws-glass .sidebar-left, .ws-glass .sidebar-right { border-radius: var(--ws-r); overflow-x: hidden; overflow-y: auto; }
+.ws-glass footer { border-radius: 14px; padding: 0 16px; }
+
+/* ประกายแสงตามเมาส์ (เหมือนหน้าหลัก) */
+.ws-glass .glass::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 0;
+  background: radial-gradient(380px circle at var(--mx, 30%) var(--my, -20%), rgba(255, 255, 255, 0.12), transparent 45%);
+}
+.ws-glass .sidebar-left > *, .ws-glass .sidebar-right > *, .ws-glass header > * { position: relative; z-index: 1; }
+
+/* ------------------------------- แถบบน ------------------------------- */
+.ws-glass .brand-text > span { font-family: 'Prompt', var(--f-head); }
+.ws-glass .brand-text b { background: linear-gradient(90deg, #22d3ee, #a855f7); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ws-glass .brand-mark { filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.5)); }
+.ws-glass .brand-project { color: var(--text-muted); }
+.ws-glass .mode-selector { border-radius: 999px; background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); padding: 4px; }
+.ws-glass .mode-btn { border-radius: 999px; color: var(--text-muted); font-family: 'Prompt', var(--f-head); padding: 7px 16px; }
+.ws-glass .mode-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.ws-glass .mode-btn.active { background: linear-gradient(115deg, rgba(34, 211, 238, 0.45), rgba(168, 85, 247, 0.45)); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 6px 18px rgba(99, 102, 241, 0.35); }
+.ws-glass .ws-avatar { border-radius: 50%; border: none; color: #fff; background: conic-gradient(from 200deg, #22d3ee, #a855f7, #ec4899, #22d3ee); box-shadow: 0 0 14px rgba(168, 85, 247, 0.5); }
+
+/* -------------------------------- ปุ่ม -------------------------------- */
+.ws-glass .btn {
+  position: relative; overflow: hidden; border-radius: 999px; padding: 8px 16px;
+  font-family: 'Prompt', var(--f-head); font-weight: 600; color: #fff;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.ws-glass .btn:hover { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.32); transform: translateY(-1px); }
+.ws-glass .btn-primary { border: none; background: linear-gradient(115deg, #22d3ee, #6366f1 50%, #ec4899); background-size: 200% 100%; box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45); color: #fff; transition: background-position 0.6s var(--ease), transform 0.2s var(--ease); }
+.ws-glass .btn-primary:hover { background-position: 100% 0; box-shadow: 0 10px 30px rgba(236, 72, 153, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+.ws-glass .btn-primary::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent); transform: skewX(-20deg); }
+.ws-glass .btn-primary:hover::after { animation: shine 0.8s var(--ease); }
+.ws-glass .btn-success { color: #b6ffe0; border-color: rgba(52, 211, 153, 0.55); background: rgba(52, 211, 153, 0.12); }
+.ws-glass .btn-success:hover { background: rgba(52, 211, 153, 0.22); border-color: #34d399; }
+.ws-glass .btn-danger { color: #ffc2d1; border-color: rgba(251, 113, 133, 0.55); background: rgba(251, 113, 133, 0.12); }
+.ws-glass .icon-btn { border-radius: 50%; border: 1px solid transparent; background: transparent; color: #fff; }
+.ws-glass .icon-btn:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); color: #fff; }
+.ws-glass .icon-btn.active { background: linear-gradient(135deg, #22d3ee, #a855f7); color: #fff; box-shadow: 0 0 16px rgba(34, 211, 238, 0.5); }
+.ws-glass .mini-btn { border-radius: 50%; }
+
+/* ----------------------------- ช่องกรอก ----------------------------- */
+.ws-glass select, .ws-glass input:not([type="checkbox"]):not([type="range"]), .ws-glass textarea {
+  background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 12px; color: #fff;
+}
+.ws-glass select option { background: #141a3a; color: #fff; }
+.ws-glass select:focus, .ws-glass input:focus, .ws-glass textarea:focus { border-color: rgba(34, 211, 238, 0.8); box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.18); }
+.ws-glass input.invalid { border-color: #fb7185; box-shadow: 0 0 0 3px rgba(251, 113, 133, 0.2); }
+.ws-glass input[type="range"] { accent-color: #a855f7; }
+.ws-glass input[type="checkbox"] { accent-color: #22d3ee; }
+.ws-glass .form-group label, .ws-glass .list-label { color: var(--text-muted); }
+
+/* ---------------------------- แผงด้านซ้าย ---------------------------- */
+.ws-glass .panel-section { border-bottom-color: rgba(255, 255, 255, 0.1); }
+.ws-glass .panel-title { font-family: 'Prompt', var(--f-head); font-size: 15px; }
+.ws-glass .panel-title i { background: linear-gradient(135deg, #22d3ee, #a855f7); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ws-glass .file-actions .btn { padding: 7px 6px; }
+.ws-glass .cat-group { color: var(--text-muted); }
+.ws-glass .cat-tab { border-radius: 12px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); color: var(--text-muted); transition: all 0.2s var(--ease); }
+.ws-glass .cat-tab:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); transform: translateY(-1px); }
+.ws-glass .cat-tab.active { background: linear-gradient(135deg, var(--cat, #22d3ee), color-mix(in srgb, var(--cat, #22d3ee) 40%, #6366f1)); border-color: transparent; color: #fff; box-shadow: 0 6px 18px color-mix(in srgb, var(--cat, #22d3ee) 50%, transparent); }
+.ws-glass .cat-head { border-top-color: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
+.ws-glass .model-card {
+  --accent: #22d3ee;
+  border-radius: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease), box-shadow 0.2s;
+}
+.ws-glass .model-card:hover { background: rgba(255, 255, 255, 0.11); border-color: color-mix(in srgb, var(--accent) 60%, transparent); transform: translateX(3px); box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 25%, transparent); }
+.ws-glass .model-card.is-added { animation: ws-added 0.6s var(--ease); }
+@keyframes ws-added { 30% { background: color-mix(in srgb, var(--accent) 30%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--accent) 60%, transparent); } }
+.ws-glass .mc-icon {
+  border-radius: 10px; color: #fff !important;
+  background: linear-gradient(140deg, color-mix(in srgb, var(--accent) 85%, #fff), color-mix(in srgb, var(--accent) 40%, transparent));
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 45%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.ws-glass .mc-text small { color: var(--text-muted); }
+.ws-glass .cable-swatch { border-radius: 10px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5); }
+.ws-glass .model-card.active { border-color: #fbbf24; box-shadow: 0 0 0 1px #fbbf24 inset, 0 0 20px rgba(251, 191, 36, 0.35); }
+.ws-glass .legend-item { color: var(--text-muted); }
+.ws-glass .legend-box { border-radius: 4px; box-shadow: 0 0 8px currentColor; }
+
+/* --------------------------- พื้นที่ห้อง 3D --------------------------- */
+.ws-glass .viewport-container { background: transparent; border-radius: var(--ws-r); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: inset 0 0 80px rgba(6, 9, 30, 0.45); }
+.ws-glass .sim-bar { border-radius: 18px; }
+.ws-glass .seg { border-radius: 999px; background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.14); }
+.ws-glass .seg button { border-radius: 999px; color: var(--text-muted); }
+.ws-glass .seg button.active { background: linear-gradient(115deg, rgba(34, 211, 238, 0.5), rgba(168, 85, 247, 0.5)); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+.ws-glass .sim-status { color: #7df9ff; }
+.ws-glass .sim-caption { border-top-color: rgba(255, 255, 255, 0.12); }
+.ws-glass .sim-caption b { color: #7df9ff; }
+.ws-glass .view-controls { border-radius: 999px; padding: 6px 10px; }
+.ws-glass .drag-hint { color: #7df9ff; border-right-color: rgba(255, 255, 255, 0.15); }
+.ws-glass .tour-banner { border-radius: 999px; border-color: rgba(34, 211, 238, 0.5); }
+.ws-glass .info-card { border-radius: 18px; border-color: rgba(34, 211, 238, 0.45); }
+.ws-glass .cable-banner { border-radius: 999px; background: linear-gradient(120deg, rgba(251, 191, 36, 0.25), rgba(236, 72, 153, 0.2)); border-color: rgba(251, 191, 36, 0.6); color: #fff; }
+.ws-glass .port-menu { border-radius: 16px; border-color: rgba(34, 211, 238, 0.45); }
+.ws-glass .pm-item { border-radius: 10px; }
+.ws-glass .pm-item:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+
+/* ---------------------------- แผงด้านขวา ---------------------------- */
+.ws-glass .tabs { margin: 10px 10px 0; padding: 4px; gap: 2px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); }
+.ws-glass .tab-btn { border-radius: 999px; padding: 8px 4px; color: var(--text-muted); background: transparent; border-bottom: none; font-family: 'Prompt', var(--f-head); }
+.ws-glass .tab-btn:hover { color: #fff; }
+.ws-glass .tab-btn.active { background: linear-gradient(115deg, rgba(34, 211, 238, 0.42), rgba(168, 85, 247, 0.42)); color: #fff; border-bottom: none; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+.ws-glass .tab-btn.tab-task { color: #fcd34d; }
+.ws-glass .tab-btn.tab-task.active { background: linear-gradient(115deg, rgba(251, 191, 36, 0.45), rgba(236, 72, 153, 0.4)); color: #fff; }
+.ws-glass .prop-head { border-bottom-color: rgba(255, 255, 255, 0.12); }
+.ws-glass .prop-head i { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 1.1rem; color: #fff; background: linear-gradient(140deg, #22d3ee, #6366f1); box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45); }
+.ws-glass .prop-section { border-radius: 16px; border-color: rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.045); }
+.ws-glass .sec-title { color: #7df9ff; }
+.ws-glass .hint { color: var(--text-muted); }
+.ws-glass .kv-table span:last-child { color: #7df9ff; }
+.ws-glass .conn-item { border-radius: 12px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08); }
+.ws-glass .empty-note { color: var(--text-muted); }
+
+.ws-glass .event-list, .ws-glass .terminal-box { background: rgba(4, 6, 22, 0.55); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; }
+.ws-glass .terminal-box { color: #8bffb3; box-shadow: inset 0 0 30px rgba(34, 211, 238, 0.06); }
+.ws-glass .term-line.info { color: #7df9ff; }
+.ws-glass .term-line.err { color: #fda4b8; }
+.ws-glass .term-line.warn { color: #fcd34d; }
+.ws-glass .ev-row { border-bottom-color: rgba(255, 255, 255, 0.06); }
+.ws-glass .ev-row:hover, .ws-glass .ev-row.active { background: rgba(99, 102, 241, 0.22); }
+.ws-glass .ev-badge { border-radius: 999px; }
+.ws-glass .ev-sep { background: linear-gradient(90deg, rgba(34, 211, 238, 0.18), transparent); color: #7df9ff; }
+.ws-glass .pdu-layer { border-radius: 0 12px 12px 0; border-left-color: #a855f7; background: rgba(255, 255, 255, 0.05); }
+.ws-glass .pdu-layer small { color: #c4b5fd; }
+.ws-glass .cmd-prompt { color: #8bffb3; }
+
+/* ภารกิจ */
+.ws-glass .task-title { font-family: 'Prompt', var(--f-head); }
+.ws-glass .task-progress { height: 12px; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.14); }
+.ws-glass .task-progress .bar { background: linear-gradient(90deg, #fbbf24, #ec4899 45%, #a855f7 70%, #22d3ee); box-shadow: 0 0 14px rgba(236, 72, 153, 0.6); }
+.ws-glass .task-stats b { background: linear-gradient(120deg, #fff, #b9f4ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ws-glass .task-item { border-radius: 14px; background: rgba(255, 255, 255, 0.045); border-color: rgba(255, 255, 255, 0.1); }
+.ws-glass .task-item.ok { background: linear-gradient(120deg, rgba(52, 211, 153, 0.16), rgba(34, 211, 238, 0.08)); border-color: rgba(52, 211, 153, 0.45); }
+.ws-glass .task-done { border-radius: 14px; background: linear-gradient(120deg, rgba(52, 211, 153, 0.2), rgba(168, 85, 247, 0.15)); }
+.ws-glass .task-hint { border-radius: 10px; }
+.ws-glass .tut-activity { border-radius: 16px; background: linear-gradient(120deg, rgba(251, 191, 36, 0.12), rgba(236, 72, 153, 0.1)); }
+
+/* ------------------------------- แถบล่าง ------------------------------- */
+.ws-glass .dot-live { background: #34d399; box-shadow: 0 0 10px #34d399; }
+.ws-glass .task-pill { border-radius: 999px; background: linear-gradient(120deg, rgba(251, 191, 36, 0.2), rgba(236, 72, 153, 0.18)); }
+
+/* ---------------------------- หน้าต่างลอย ---------------------------- */
+.ws-glass .modal-overlay { background: rgba(4, 6, 20, 0.5); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.ws-glass .sim-browser { border-radius: 22px; }
+.ws-glass .browser-bar, .ws-glass .browser-client { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
+.ws-glass .browser-url { border-radius: 999px; background: rgba(4, 6, 22, 0.6); border-color: rgba(255, 255, 255, 0.14); }
+.ws-glass .browser-url button { border-radius: 50%; background: linear-gradient(135deg, #22d3ee, #6366f1); }
+.ws-glass .browser-close-btn { border-radius: 999px; background: linear-gradient(135deg, #fb7185, #ec4899); }
+.ws-glass .info-modal { border-radius: 22px; }
+.ws-glass .info-modal-head { background: rgba(255, 255, 255, 0.05); border-bottom-color: rgba(255, 255, 255, 0.12); }
+.ws-glass .info-modal-head strong { background: linear-gradient(90deg, #7df9ff, #c4b5fd); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ws-glass .info-modal-body .goal { border-radius: 14px; background: rgba(34, 211, 238, 0.1); }
+.ws-glass .info-modal-body code { border-radius: 6px; background: rgba(4, 6, 22, 0.6); color: #8bffb3; }
+
+@media (max-width: 1280px) {
+  .ws-glass .main-workspace { grid-template-columns: 250px minmax(0, 1fr) 310px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ws-glass .model-card.is-added { animation: none; }
+}
+
+/* Toast ลอยเหนือแถบล่างและปุ่มควบคุมมุมล่าง ไม่บังสถานะภารกิจ */
+.ws-glass .sc-toasts { bottom: 112px; }
+
+/* ---------------------- ปุ่ม W A S D ในโหมดเดินสำรวจ 360° ---------------------- */
+.wasd-pad { display: none; position: absolute; left: 80px; bottom: 18px; z-index: 26; flex-direction: column; align-items: center; gap: 6px; padding: 10px 12px 8px; border-radius: 22px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.04)); border: 1px solid rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); box-shadow: 0 16px 40px rgba(2, 4, 20, 0.45); user-select: none; touch-action: none; }
+.mode-360 .wasd-pad { display: flex; }
+.wasd-row { display: flex; gap: 6px; }
+.wasd-key { width: 44px; height: 44px; border-radius: 12px; cursor: pointer; color: #fff; font: 700 16px 'JetBrains Mono', monospace;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05)); border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.3), 0 3px 0 rgba(0, 0, 0, 0.25); transition: transform 0.08s, background 0.12s, box-shadow 0.12s; touch-action: none; }
+.wasd-key.down { transform: translateY(2px); background: linear-gradient(140deg, #22d3ee, #a855f7); border-color: transparent; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 18px rgba(34, 211, 238, 0.6); }
+.wasd-key:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.wasd-pad small { font-size: 10.5px; color: rgba(226, 232, 255, 0.7); }
+.ws-glass .tour-banner b { color: #7df9ff; font-family: 'JetBrains Mono', monospace; }
+.ws-glass.mode-360 .tour-banner { left: 250px; right: 14px; bottom: 18px; transform: none; white-space: normal; justify-content: center; text-align: center; }
+
+/* ---------------------- โหมดแก้ไขตำแหน่งอุปกรณ์ ---------------------- */
+.view-controls .edit-only { display: none; }
+.edit-on .view-controls .edit-only { display: grid; }
+.ws-glass .icon-btn.edit-btn.active { background: linear-gradient(135deg, #fbbf24, #f97316); box-shadow: 0 0 16px rgba(251, 191, 36, 0.6); color: #1f1300; }
+.edit-on .viewport-container { box-shadow: inset 0 0 0 2px rgba(251, 191, 36, 0.75), inset 0 0 50px rgba(251, 191, 36, 0.18) !important; }
+.edit-on .ws-glass .drag-hint, .ws-glass.edit-on .drag-hint { color: #fde68a; }
+.ws-glass .drag-hint .fa-lock { color: rgba(226, 232, 255, 0.6); }
+
+/* ---------------------- พื้นที่หลายห้อง / หลายอาคาร ---------------------- */
+.zone-nav { display: flex; flex-direction: column; gap: 6px; margin: 2px 0 10px; }
+.zone-nav[hidden] { display: none; }
+.zone-nav__note { font-size: 11.5px; color: var(--text-muted, rgba(226, 232, 255, 0.68)); }
+.zone-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.zone-chip {
+  --z: #22d3ee; display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 999px; cursor: pointer;
+  font: 500 12px 'IBM Plex Sans Thai', sans-serif; color: #fff; background: color-mix(in srgb, var(--z) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--z) 40%, transparent); transition: background 0.2s, transform 0.2s;
+}
+.zone-chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--z); box-shadow: 0 0 8px var(--z); }
+.zone-chip:hover { transform: translateY(-1px); background: color-mix(in srgb, var(--z) 22%, transparent); }
+.zone-chip.active { background: linear-gradient(120deg, color-mix(in srgb, var(--z) 55%, transparent), color-mix(in srgb, var(--z) 25%, #6366f1)); border-color: transparent; box-shadow: 0 4px 14px color-mix(in srgb, var(--z) 40%, transparent); }
+.zone-chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.big-templates { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.big-templates > span { grid-column: 1 / -1; font-size: 12px; color: var(--text-muted, rgba(226, 232, 255, 0.68)); }
+.ws-glass .big-templates .btn { padding: 7px 8px; font-size: 12px; justify-content: center; }
+.ws-glass select optgroup { background: #141a3a; color: #c4b5fd; font-style: normal; }
+
+/* ------------------------------ จัดเส้นทางสาย ------------------------------ */
+.route-len { display: flex; flex-direction: column; gap: 6px; }
+.route-len__row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.route-len__num { margin-left: auto; font-family: 'JetBrains Mono', monospace; color: var(--text-muted, #aab); }
+.route-len__num b { color: #fff; font-size: 15px; }
+.route-meter { height: 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+.route-meter i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #34d399, #fbbf24 75%, #fb7185); }
+.route-len.bad { border-color: rgba(251, 113, 133, 0.6) !important; background: rgba(251, 113, 133, 0.1) !important; }
+.route-warn { color: #fda4b8; font-size: 12px; }
+.route-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.ws-glass .route-presets .btn { justify-content: center; font-size: 12.5px; padding: 7px 8px; }
+.route-points { display: flex; flex-wrap: wrap; gap: 6px; }
+.route-pt { --c: #fff; display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; cursor: pointer; color: #fff; font-size: 12px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); }
+.route-pt i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
+.route-pt small { color: var(--text-muted, #aab); font-size: 11px; }
+.route-pt.active { background: color-mix(in srgb, var(--c) 25%, transparent); border-color: var(--c); }
+.route-anchors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+.route-anc { --c: #fff; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 4px; border-radius: 12px; cursor: pointer; color: #fff; font-size: 11.5px;
+  background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); }
+.route-anc i { color: var(--c); font-size: 14px; }
+.route-anc.active { background: color-mix(in srgb, var(--c) 22%, transparent); border-color: var(--c); box-shadow: 0 0 14px color-mix(in srgb, var(--c) 35%, transparent); }
+.route-anc:focus-visible, .route-pt:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.route-help { font-size: 11.5px; }
+
+/* ทางลัดไปห้องเรียน IoT (อุปกรณ์ IoT ย้ายออกจากแล็บเครือข่าย) */
+.cat-tab--iot { display: grid; place-items: center; text-decoration: none; color: #fbbf24 !important; border-style: dashed !important; margin-top: 6px; }
+.cat-tab--iot:hover { background: rgba(245, 158, 11, 0.16) !important; border-color: #f59e0b !important; }

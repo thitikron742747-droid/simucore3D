@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimuCore IoT Lab | ห้องจำลองระบบ IoT 3D</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="glass.css">
+  <link rel="stylesheet" href="iot-lab.css">
+  <script src="config.js"></script>
+  <script src="store.js"></script>
+  <script>Store.requireLogin();</script>
+</head>
+<body class="glass-theme iot-lab">
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<div class="iot-app">
+  <header class="iot-top glass">
+    <a class="iot-brand" href="iot.html" title="กลับห้องเรียน IoT">
+      <span class="iot-brand__mark"><i class="fa-solid fa-microchip"></i></span>
+      <span class="iot-brand__text">
+        <span>Simu<b>Core</b> IoT</span>
+        <small id="lessonName">กำลังโหลด…</small>
+      </span>
+    </a>
+    <div class="iot-prog" id="topProgress" title="ความคืบหน้าภารกิจ">
+      <span class="iot-prog__bar"><i id="topProgressBar"></i></span>
+      <b id="topProgressText">0/0</b>
+    </div>
+    <div class="iot-actions">
+      <button class="iot-btn iot-btn--run" id="btnRun" type="button"><i class="fa-solid fa-play"></i> <span>เริ่มจำลอง</span></button>
+      <button class="iot-btn" id="btnValidate" type="button" title="ตรวจหาจุดที่ยังต่อไม่ครบ"><i class="fa-solid fa-stethoscope"></i> ตรวจระบบ</button>
+      <button class="iot-btn" id="btnCode" type="button" title="ดูโค้ดที่สร้างจากกฎ"><i class="fa-solid fa-code"></i> โค้ด</button>
+      <button class="iot-btn" id="btnSave" type="button"><i class="fa-solid fa-floppy-disk"></i> บันทึก</button>
+      <a class="iot-btn" href="iot.html"><i class="fa-solid fa-chalkboard"></i> ห้องเรียน IoT</a>
+      <a class="iot-btn iot-btn--icon" href="index.html" title="หน้าหลัก" aria-label="หน้าหลัก"><i class="fa-solid fa-house"></i></a>
+    </div>
+  </header>
+
+  <div class="iot-main">
+    <!-- ซ้าย: ชิ้นส่วน + สภาพแวดล้อม -->
+    <aside class="iot-left glass" aria-label="ชิ้นส่วนและสภาพแวดล้อม">
+      <div class="iot-left__tabs" role="tablist">
+        <button class="is-active" data-left="parts" role="tab"><i class="fa-solid fa-boxes-stacked"></i> ชิ้นส่วน</button>
+        <button data-left="env" role="tab"><i class="fa-solid fa-cloud-sun"></i> สภาพแวดล้อม</button>
+      </div>
+      <div class="iot-left__body" id="leftParts"></div>
+      <div class="iot-left__body" id="leftEnv" hidden></div>
+    </aside>
+
+    <!-- กลาง: ฉาก 3D มุมบน -->
+    <section class="iot-stage" id="stage" aria-label="พื้นที่จำลอง 3D มุมมองด้านบน">
+      <canvas id="iotCanvas"></canvas>
+      <div class="iot-tools glass" role="toolbar" aria-label="เครื่องมือ">
+        <button class="is-active" data-tool="select" title="เลือก / ย้าย (V)"><i class="fa-solid fa-arrow-pointer"></i><span>เลือก/ย้าย</span></button>
+        <button data-tool="wire" title="ต่อสาย: คลิกชิ้นส่วนแล้วคลิกบอร์ด (W)"><i class="fa-solid fa-plug"></i><span>ต่อสาย</span></button>
+        <button data-tool="delete" title="ลบชิ้นส่วน (Delete)"><i class="fa-solid fa-eraser"></i><span>ลบ</span></button>
+      </div>
+      <div class="iot-view glass">
+        <button id="btnTop" class="is-active" title="มุมมองด้านบน"><i class="fa-solid fa-square"></i> มุมบน</button>
+        <button id="btnTilt" title="เอียงกล้องดูแบบ 3D"><i class="fa-solid fa-cube"></i> มุมเอียง</button>
+        <button id="btnZoomIn" title="ซูมเข้า" aria-label="ซูมเข้า"><i class="fa-solid fa-plus"></i></button>
+        <button id="btnZoomOut" title="ซูมออก" aria-label="ซูมออก"><i class="fa-solid fa-minus"></i></button>
+      </div>
+      <div class="iot-hint" id="stageHint"></div>
+      <div class="iot-legend glass" aria-label="ความหมายของสาย">
+        <span><i style="--c:#facc15"></i>สัญญาณดิจิทัล</span>
+        <span><i style="--c:#fb923c"></i>สัญญาณอนาล็อก</span>
+        <span><i style="--c:#38bdf8"></i>สั่งงานอุปกรณ์</span>
+        <span><i style="--c:#a78bfa" class="dash"></i>Wi-Fi / Cloud</span>
+      </div>
+      <div class="iot-clock" id="simClock" hidden><span class="dot"></span> กำลังจำลอง <b id="tickText">0</b></div>
+    </section>
+
+    <!-- ขวา: ภารกิจ / คุณสมบัติ / กฎ / มือถือ / Serial -->
+    <aside class="iot-right glass" aria-label="แผงควบคุม">
+      <nav class="iot-tabs" role="tablist">
+        <button class="is-active" data-tab="lesson" role="tab"><i class="fa-solid fa-flag-checkered"></i><span>ภารกิจ</span></button>
+        <button data-tab="props" role="tab"><i class="fa-solid fa-sliders"></i><span>คุณสมบัติ</span></button>
+        <button data-tab="rules" role="tab"><i class="fa-solid fa-diagram-project"></i><span>กฎ</span><em id="ruleCount"></em></button>
+        <button data-tab="phone" role="tab"><i class="fa-solid fa-mobile-screen"></i><span>มือถือ</span><em id="notiCount"></em></button>
+        <button data-tab="serial" role="tab"><i class="fa-solid fa-terminal"></i><span>Serial</span></button>
+      </nav>
+      <div class="iot-pane" id="pane-lesson"></div>
+      <div class="iot-pane" id="pane-props" hidden></div>
+      <div class="iot-pane" id="pane-rules" hidden></div>
+      <div class="iot-pane" id="pane-phone" hidden></div>
+      <div class="iot-pane iot-pane--serial" id="pane-serial" hidden>
+        <div class="serial-head"><span><i class="fa-solid fa-terminal"></i> Serial Monitor · 115200 baud</span><button class="iot-mini" id="btnClearSerial" type="button">ล้าง</button></div>
+        <pre class="serial" id="serialOut" aria-live="polite"></pre>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ดูโค้ด -->
+<div class="iot-modal" id="codeModal" hidden>
+  <div class="iot-modal__panel glass" role="dialog" aria-labelledby="codeTitle">
+    <div class="iot-modal__head">
+      <div><h2 id="codeTitle">โค้ดที่สร้างจากกฎ</h2><p>ระบบแปลงกฎ "ถ้า…แล้ว…" เป็นโค้ดจริงที่ใช้กับบอร์ดได้ ลองเทียบกฎกับโค้ดทีละบรรทัด</p></div>
+      <button class="iot-mini iot-mini--icon" data-close aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="code-tabs" id="codeTabs"></div>
+    <pre class="code" id="codeOut"></pre>
+    <div class="iot-modal__foot">
+      <button class="iot-btn" id="btnCopyCode" type="button"><i class="fa-regular fa-copy"></i> คัดลอกโค้ด</button>
+      <button class="iot-btn iot-btn--run" data-close type="button">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="ui.js"></script>
+<script src="iot-engine.js"></script>
+<script src="iot-lessons.js"></script>
+<script src="iot-lab.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+/* ==========================================================================
+   SimuCore UI Kit — โทนสี ตัวอักษร และส่วนประกอบที่ใช้ร่วมกันทุกหน้า
+   แนวคิด: ตู้แร็คเครือข่าย — โลหะสีเทาเข้ม + สีของสาย/โปรโตคอลจริงเป็นสีที่มีความหมาย
+   ========================================================================== */
+:root {
+  --rack: #1b2029;
+  --panel: #232a35;
+  --raised: #2c3442;
+  --line: #3a4454;
+  --line-soft: #2f3746;
+  --ink: #e9edf3;
+  --muted: #9aa6b8;
+  --dim: #6b778a;
+
+  --signal: #38c6f4;   /* สาย Console — ปุ่มหลัก / ลิงก์ */
+  --signal-ink: #04202b;
+  --link: #3ddc84;     /* ไฟลิงก์เขียว — สำเร็จ */
+  --amber: #ffb020;    /* ARP — กำลังทำงาน / คำเตือน */
+  --fault: #ff5468;    /* ลิงก์ดาวน์ — ผิดพลาด */
+  --fiber: #ff8a1f;
+  --violet: #b48cff;
+
+  --f-head: 'Chakra Petch', 'IBM Plex Sans Thai', sans-serif;
+  --f-body: 'IBM Plex Sans Thai', 'Chakra Petch', sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --r-s: 4px;
+  --r-m: 10px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---------------------------------- ปุ่ม ---------------------------------- */
+.sc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 40px; padding: 0 16px;
+  border-radius: var(--r-s); border: 1px solid var(--line);
+  background: var(--raised); color: var(--ink);
+  font: 600 14px/1 var(--f-head); letter-spacing: 0.2px;
+  cursor: pointer; text-decoration: none;
+  transition: background 0.18s var(--ease), border-color 0.18s var(--ease), transform 0.12s var(--ease), box-shadow 0.18s var(--ease);
+}
+.sc-btn:hover { border-color: var(--muted); background: #343d4d; }
+.sc-btn:active { transform: scale(0.97); }
+.sc-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.sc-btn--primary { background: var(--signal); border-color: var(--signal); color: var(--signal-ink); }
+.sc-btn--primary:hover { background: #63d4f7; border-color: #63d4f7; box-shadow: 0 0 0 4px rgba(56, 198, 244, 0.16); }
+.sc-btn--ghost { background: transparent; }
+.sc-btn--danger { background: transparent; border-color: rgba(255, 84, 104, 0.55); color: #ff8a98; }
+.sc-btn--danger:hover { background: rgba(255, 84, 104, 0.12); border-color: var(--fault); }
+.sc-btn--block { width: 100%; }
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+/* ------------------------- ตัวโหลด: แพ็กเก็ตวิ่งบนสาย ------------------------- */
+.sc-loader {
+  position: fixed; inset: 0; z-index: 9999;
+  display: grid; place-items: center;
+  background: rgba(22, 26, 34, 0.94);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s var(--ease);
+}
+.sc-loader.is-on { opacity: 1; pointer-events: all; }
+.sc-loader__box {
+  width: min(380px, calc(100vw - 40px));
+  display: flex; flex-direction: column; gap: 18px;
+  transform: translateY(10px); transition: transform 0.4s var(--ease);
+}
+.sc-loader.is-on .sc-loader__box { transform: none; }
+.sc-wire { position: relative; height: 28px; display: flex; align-items: center; }
+.sc-wire__port {
+  width: 26px; height: 22px; flex: none; border-radius: 3px;
+  background: var(--raised); border: 1px solid var(--line);
+  display: grid; place-items: center;
+}
+.sc-wire__port::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--link); box-shadow: 0 0 8px var(--link); }
+.sc-wire__cable { flex: 1; height: 3px; background: var(--line); position: relative; overflow: visible; }
+.sc-wire__packet {
+  position: absolute; top: 50%; left: 0; width: 18px; height: 12px; margin-top: -6px;
+  border-radius: 2px; background: var(--packet, var(--amber));
+  box-shadow: 0 0 12px var(--packet, var(--amber));
+  animation: sc-travel 1.1s var(--ease) infinite alternate;
+}
+@keyframes sc-travel { from { left: 0; } to { left: calc(100% - 18px); } }
+.sc-loader__title { font: 600 20px/1.3 var(--f-head); color: var(--ink); }
+.sc-loader__sub { font: 400 14px/1.5 var(--f-body); color: var(--muted); margin-top: 4px; }
+.sc-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.sc-steps li { display: flex; align-items: center; gap: 10px; font: 400 14px/1.4 var(--f-body); color: var(--dim); transition: color 0.2s; }
+.sc-steps li::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex: none; transition: background 0.2s, box-shadow 0.2s; }
+.sc-steps li.is-active { color: var(--ink); }
+.sc-steps li.is-active::before { background: var(--amber); box-shadow: 0 0 8px var(--amber); animation: sc-blink 0.6s steps(2) infinite; }
+.sc-steps li.is-done { color: var(--muted); }
+.sc-steps li.is-done::before { background: var(--link); box-shadow: 0 0 6px var(--link); }
+.sc-steps li.is-fail { color: #ff8a98; }
+.sc-steps li.is-fail::before { background: var(--fault); }
+@keyframes sc-blink { 50% { opacity: 0.25; } }
+.sc-loader__bar { height: 3px; background: var(--line-soft); border-radius: 2px; overflow: hidden; }
+.sc-loader__bar span { display: block; height: 100%; width: 0; background: var(--link); transition: width 0.3s var(--ease); }
+
+/* ---------------------------------- Toast --------------------------------- */
+.sc-toasts {
+  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+  z-index: 10000; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  pointer-events: none; width: min(560px, calc(100vw - 32px));
+}
+.sc-toast {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 16px 11px 14px; border-radius: var(--r-s);
+  background: #2a3240; border: 1px solid var(--line); border-left: 3px solid var(--signal);
+  color: var(--ink); font: 400 14px/1.45 var(--f-body);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  animation: sc-toast-in 0.32s var(--ease) both;
+  pointer-events: auto; max-width: 100%;
+}
+.sc-toast--ok { border-left-color: var(--link); }
+.sc-toast--err { border-left-color: var(--fault); }
+.sc-toast--warn { border-left-color: var(--amber); }
+.sc-toast.is-out { animation: sc-toast-out 0.25s var(--ease) both; }
+@keyframes sc-toast-in { from { opacity: 0; transform: translateY(14px) scale(0.98); } }
+@keyframes sc-toast-out { to { opacity: 0; transform: translateY(8px); } }
+
+/* ----------------------------- กล่องยืนยัน (Dialog) ---------------------------- */
+.sc-dialog {
+  position: fixed; inset: 0; z-index: 9990; display: grid; place-items: center; padding: 20px;
+  background: rgba(14, 17, 23, 0.7);
+  animation: sc-fade 0.2s var(--ease) both;
+}
+.sc-dialog.is-out { animation: sc-fade 0.18s var(--ease) reverse both; }
+.sc-dialog__panel {
+  width: min(420px, 100%); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-m);
+  padding: 22px; display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  animation: sc-pop 0.26s var(--ease) both;
+}
+.sc-dialog__title { font: 600 18px/1.35 var(--f-head); color: var(--ink); margin: 0; }
+.sc-dialog__msg { font: 400 14px/1.6 var(--f-body); color: var(--muted); margin: 0; }
+.sc-dialog__actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+@keyframes sc-fade { from { opacity: 0; } }
+@keyframes sc-pop { from { opacity: 0; transform: translateY(8px) scale(0.97); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-wire__packet { animation: none; left: calc(50% - 9px); }
+  .sc-steps li.is-active::before { animation: none; }
+  .sc-toast, .sc-toast.is-out, .sc-dialog, .sc-dialog__panel { animation-duration: 0.01ms; }
+}

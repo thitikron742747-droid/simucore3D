@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1b2029">
+  <title>เข้าสู่ระบบ | SimuCore 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="glass.css">
+</head>
+<body class="glass-theme">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <main class="auth">
+    <!-- ฝั่งซ้าย: อธิบายระบบ + ภาพการเชื่อมต่อที่เคลื่อนไหวจริงตอนกดปุ่ม -->
+    <section class="auth__story" aria-label="เกี่ยวกับระบบ">
+      <a class="brand" href="auth.html" aria-label="SimuCore 3D">
+        <svg class="brand__mark" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="5" fill="#2c3442" stroke="#3a4454"/><rect x="6" y="11" width="9" height="8" rx="1.5" fill="#1b2029" stroke="#6b778a"/><rect x="19" y="11" width="9" height="8" rx="1.5" fill="#1b2029" stroke="#6b778a"/><circle cx="10.5" cy="24" r="1.8" fill="#3ddc84"/><circle cx="23.5" cy="24" r="1.8" fill="#38c6f4"/></svg>
+        <span class="brand__name">Simu<b>Core</b> 3D</span>
+      </a>
+
+      <div>
+        <h1 id="storyTitle"><span class="nw">เข้าห้องแล็บ</span><wbr><span class="nw">เครือข่ายของคุณ</span></h1>
+        <p id="storyText">ทุกครั้งที่กดเข้าสู่ระบบ เครื่องของคุณกับระบบจะคุยกันแบบ TCP 3-way handshake ดูด้านล่างได้เลยว่าแพ็กเก็ตไหนวิ่งไปทางไหน</p>
+      </div>
+
+      <div class="hs glass" id="handshake" aria-live="polite">
+        <div class="hs__ends">
+          <span class="hs__end"><i class="fa-solid fa-laptop"></i> เครื่องของคุณ</span>
+          <span class="hs__end">SimuCore <i class="fa-solid fa-server"></i></span>
+        </div>
+        <ol class="hs__lanes" id="hsLanes"></ol>
+        <div class="hs__status"><span class="led"></span><span id="hsStatus">รอการเชื่อมต่อ</span></div>
+      </div>
+
+      <ul class="auth__points">
+        <li><b>65 รุ่นอุปกรณ์</b>Router, Switch, Wi-Fi, Firewall และอุปกรณ์ปลายทาง</li>
+        <li><b>12 ชนิดสาย</b>ตั้งแต่สาย LAN ไปจนถึง Serial และ Fiber</li>
+        <li><b>6 แล็บพร้อมภารกิจ</b>ระบบตรวจคะแนนให้ทันที</li>
+        <li><b>เห็นแพ็กเก็ตวิ่ง</b>ARP, ping, DNS, HTTP, DHCP ในห้อง 3D</li>
+      </ul>
+    </section>
+
+    <!-- ฝั่งขวา: ฟอร์ม -->
+    <section class="auth__pane">
+      <div class="auth__card glass">
+        <div class="tabs" role="tablist" aria-label="เลือกฟอร์ม">
+          <button type="button" role="tab" id="tabLogin" aria-selected="true" aria-controls="loginForm">เข้าสู่ระบบ</button>
+          <button type="button" role="tab" id="tabRegister" aria-selected="false" aria-controls="registerForm">สมัครสมาชิก</button>
+        </div>
+
+        <!-- เข้าสู่ระบบ -->
+        <form id="loginForm" class="form form-panel" novalidate>
+          <div>
+            <h2>ยินดีต้อนรับกลับ</h2>
+            <p class="field__hint">ใช้ชื่อผู้ใช้ที่สมัครไว้</p>
+          </div>
+          <div class="form-error" id="loginError" role="alert"></div>
+          <div class="field">
+            <label for="loginUser">ชื่อผู้ใช้</label>
+            <input id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+          </div>
+          <div class="field">
+            <label for="loginPass">รหัสผ่าน</label>
+            <div class="pw">
+              <input id="loginPass" name="password" type="password" autocomplete="current-password" required>
+              <button type="button" class="pw-toggle" aria-label="แสดงรหัสผ่าน"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="auth__row">
+            <label class="check"><input type="checkbox" id="loginRemember"> จดจำฉันในเครื่องนี้</label>
+            <a href="#" class="linkish" id="forgotLink">ลืมรหัสผ่าน?</a>
+          </div>
+          <button class="sc-btn sc-btn--primary sc-btn--block" type="submit" id="loginBtn">เข้าสู่ระบบ</button>
+          <div class="auth__alt" id="guestDivider">หรือ</div>
+          <button class="sc-btn sc-btn--block" type="button" id="guestBtn"><i class="fa-solid fa-user-astronaut"></i> ทดลองใช้โดยไม่สมัคร</button>
+        </form>
+
+        <!-- สมัครสมาชิก -->
+        <form id="registerForm" class="form form-panel" novalidate hidden>
+          <div>
+            <h2>สร้างบัญชีใหม่</h2>
+            <p class="field__hint">บันทึกโครงการและคะแนนภารกิจไว้ในบัญชีของคุณ</p>
+          </div>
+          <div class="form-error" id="registerError" role="alert"></div>
+          <div class="field" data-field="fullName">
+            <label for="regName">ชื่อ-นามสกุล</label>
+            <input id="regName" name="fullName" autocomplete="name" required>
+            <div class="field__error"></div>
+          </div>
+          <div class="field" data-field="username">
+            <label for="regUser">ชื่อผู้ใช้ (ใช้เข้าสู่ระบบ)</label>
+            <input id="regUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="เช่น somchai.k" required>
+            <div class="field__error"></div>
+          </div>
+          <div class="field" data-field="role">
+            <span class="field__label" id="roleLabel">ฉันเป็น</span>
+            <div class="seg" role="radiogroup" aria-labelledby="roleLabel">
+              <label><input type="radio" name="role" value="student" checked><span><i class="fa-solid fa-user-graduate"></i> นักเรียน</span></label>
+              <label><input type="radio" name="role" value="teacher"><span><i class="fa-solid fa-chalkboard-user"></i> ครู</span></label>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label for="regClass">ห้องเรียน (ไม่บังคับ)</label>
+              <input id="regClass" name="classroom" placeholder="เช่น ปวช.3/1">
+            </div>
+            <div class="field" id="studentIdField">
+              <label for="regSid">รหัสนักเรียน (ไม่บังคับ)</label>
+              <input id="regSid" name="studentId" inputmode="numeric">
+            </div>
+          </div>
+          <div class="field" data-field="password">
+            <label for="regPass">รหัสผ่าน</label>
+            <div class="pw">
+              <input id="regPass" name="password" type="password" autocomplete="new-password" required>
+              <button type="button" class="pw-toggle" aria-label="แสดงรหัสผ่าน"><i class="fa-solid fa-eye"></i></button>
+            </div>
+            <div class="strength" id="pwStrength" data-level="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <div class="field__hint" id="pwHint">อย่างน้อย 8 ตัว ผสมตัวเลขและตัวอักษร</div>
+            <div class="field__error"></div>
+          </div>
+          <div class="field" data-field="confirm">
+            <label for="regPass2">ยืนยันรหัสผ่าน</label>
+            <input id="regPass2" name="confirm" type="password" autocomplete="new-password" required>
+            <div class="field__error"></div>
+          </div>
+          <button class="sc-btn sc-btn--primary sc-btn--block" type="submit" id="registerBtn">สมัครสมาชิก</button>
+        </form>
+
+        <p class="auth__note" id="modeNote"></p>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="store.js"></script>
+  <script src="ui.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>

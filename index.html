@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1b2029">
+  <title>SimuCore 3D | ห้องแล็บเครือข่ายจำลอง 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="glass.css">
+  <script src="config.js"></script>
+  <script src="store.js"></script>
+  <script>Store.requireLogin();</script>
+</head>
+<body class="glass-theme">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <header class="topbar">
+    <a href="index.html" class="brand" aria-label="SimuCore 3D หน้าหลัก">
+      <svg class="brand__mark" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="5" fill="#2c3442" stroke="#3a4454"/><rect x="6" y="11" width="9" height="8" rx="1.5" fill="#1b2029" stroke="#6b778a"/><rect x="19" y="11" width="9" height="8" rx="1.5" fill="#1b2029" stroke="#6b778a"/><circle cx="10.5" cy="24" r="1.8" fill="#3ddc84"/><circle cx="23.5" cy="24" r="1.8" fill="#38c6f4"/></svg>
+      <span class="brand__name">Simu<b>Core</b> 3D</span>
+    </a>
+
+    <label class="search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="searchInput" type="search" placeholder="ค้นหาแล็บ อุปกรณ์ หรือโครงการ" aria-label="ค้นหา">
+    </label>
+
+    <div class="user">
+      <button class="user__btn" id="userBtn" aria-haspopup="menu" aria-expanded="false">
+        <span class="avatar" id="userAvatar">?</span>
+        <span class="user__text">
+          <span class="user__name" id="userName">—</span>
+          <span class="user__role" id="userRole"></span>
+        </span>
+        <i class="fa-solid fa-chevron-down" style="font-size:11px;color:var(--dim)"></i>
+      </button>
+      <div class="menu" id="userMenu" role="menu" hidden>
+        <div class="menu__meta" id="userMeta"></div>
+        <button role="menuitem" id="menuProfile"><i class="fa-solid fa-id-card"></i> บัญชีของฉัน</button>
+        <button role="menuitem" id="menuReports"><i class="fa-solid fa-chart-line"></i> รายงานและคะแนน</button>
+        <button role="menuitem" id="menuTeacher" hidden><i class="fa-solid fa-chalkboard-user"></i> แดชบอร์ดครู</button>
+        <hr>
+        <button role="menuitem" class="is-danger" id="menuLogout"><i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidenav" aria-label="เมนูหลัก">
+      <button class="nav-item is-active" data-page="home"><i class="fa-solid fa-house"></i> หน้าหลัก</button>
+      <button class="nav-item" data-page="labs"><i class="fa-solid fa-cubes"></i> แล็บเครือข่าย</button>
+      <a class="nav-item" href="iot.html" id="navIot"><i class="fa-solid fa-microchip"></i> ห้องเรียน IoT</a>
+      <button class="nav-item" data-page="projects"><i class="fa-solid fa-folder-open"></i> โครงการ</button>
+      <button class="nav-item" data-page="progress"><i class="fa-solid fa-medal"></i> ความก้าวหน้า</button>
+      <a class="nav-item" href="teacher.html" id="navTeacher" hidden><i class="fa-solid fa-chalkboard-user"></i> แดชบอร์ดครู</a>
+      <button class="nav-item" data-page="reports"><i class="fa-solid fa-chart-line"></i> รายงาน</button>
+      <button class="nav-item" data-page="profile"><i class="fa-solid fa-id-card"></i> บัญชี</button>
+      <div class="sidenav__foot">
+        <b><span class="led"></span> ระบบพร้อมใช้งาน</b>
+        <span id="storageNote"></span>
+      </div>
+    </nav>
+
+    <main class="main">
+      <!-- Hero: แผนผังเครือข่ายที่แพ็กเก็ตวิ่งจริงพร้อมคำบรรยาย -->
+      <section class="hero" id="home">
+        <div>
+          <p class="hero__greet"><span class="led"></span><span id="greet"></span></p>
+          <h1><span class="nw">ต่อสาย</span> <span class="nw">ตั้ง IP</span> <span class="nw">แล้วดู</span><wbr><span class="nw grad">แพ็กเก็ตวิ่งในห้อง 3D</span></h1>
+          <p>จำลองอุปกรณ์เครือข่าย 62 รุ่นแบบ Cisco Packet Tracer เห็นทุกขั้นตอนที่ข้อมูลเดินทาง และมีภารกิจที่ตรวจคะแนนให้ทันที</p>
+          <div class="hero__actions">
+            <button class="sc-btn sc-btn--primary" id="newProjectBtn"><i class="fa-solid fa-plus"></i> สร้างโครงการ</button>
+            <button class="sc-btn sc-btn--ghost" id="exploreBtn">ดูแล็บทั้งหมด</button>
+          </div>
+          <div class="hero__facts">
+            <div class="glass"><b data-count="62">0</b>รุ่นอุปกรณ์</div>
+            <div class="glass"><b data-count="10">0</b>ชนิดสาย</div>
+            <div class="glass"><b data-count="6">0</b>แล็บพร้อมภารกิจ</div>
+          </div>
+        </div>
+        <!-- ฉาก 3D หมุน: อุปกรณ์เครือข่ายโคจรรอบแกนกลาง (สร้างใน main.js) -->
+        <div class="orbit" id="orbit" aria-hidden="true">
+          <div class="orbit__shadow"></div>
+          <div class="orbit__scene" id="orbitScene"></div>
+        </div>
+      </section>
+
+      <!-- เลือกห้องเรียน -->
+      <section class="section" id="classrooms" aria-labelledby="roomsH">
+        <div class="section__head">
+          <div>
+            <h2 id="roomsH">เลือกห้องเรียน</h2>
+            <p>สองห้องเรียน สองแบบการจำลอง ความก้าวหน้า XP และเหรียญรวมอยู่ในบัญชีเดียวกัน</p>
+          </div>
+        </div>
+        <div class="rooms">
+          <a class="room glass" href="#labs" data-room="network" style="--accent:#22d3ee">
+            <span class="room__art" aria-hidden="true">
+              <svg viewBox="0 0 120 80"><rect x="8" y="30" width="34" height="20" rx="3" fill="#1b2029" stroke="#6b778a"/><rect x="78" y="30" width="34" height="20" rx="3" fill="#1b2029" stroke="#6b778a"/><rect x="44" y="8" width="32" height="16" rx="3" fill="#2c3442" stroke="#22d3ee"/><path d="M25 30 L52 24 M95 30 L68 24" stroke="#22d3ee" stroke-width="2.5"/><circle class="room__dot" r="3.5" fill="#3ddc84"><animateMotion dur="2s" repeatCount="indefinite" path="M25 30 L52 24 L68 24 L95 30"/></circle><rect x="14" y="58" width="22" height="14" rx="2" fill="#2c3442"/><rect x="84" y="58" width="22" height="14" rx="2" fill="#2c3442"/><path d="M25 50 V58 M95 50 V58" stroke="#facc15" stroke-width="2"/></svg>
+            </span>
+            <span class="room__body">
+              <small>ห้องจำลอง 3D · เดินสำรวจ 360°</small>
+              <b>ห้องเรียนเครือข่าย</b>
+              <span>Router, Switch, Wi-Fi, Server ตั้ง IP แล้วดูแพ็กเก็ตวิ่ง 6 แล็บพร้อมภารกิจ และโหมดบ้าน อาคาร วิทยาเขต</span>
+              <em>ดูแล็บทั้งหมด <i class="fa-solid fa-arrow-down"></i></em>
+            </span>
+          </a>
+          <a class="room glass" href="iot.html" data-room="iot" style="--accent:#f59e0b">
+            <span class="room__art" aria-hidden="true">
+              <svg viewBox="0 0 120 80"><rect x="40" y="26" width="40" height="28" rx="3" fill="#0f6c8a" stroke="rgba(255,255,255,.5)"/><g fill="#e8c35a"><rect x="44" y="29" width="4" height="4"/><rect x="51" y="29" width="4" height="4"/><rect x="58" y="29" width="4" height="4"/><rect x="65" y="29" width="4" height="4"/><rect x="72" y="29" width="4" height="4"/></g><circle cx="16" cy="40" r="9" fill="#f8fafc"/><path d="M25 40 C33 40 34 36 40 36" stroke="#facc15" stroke-width="2.5" fill="none"/><path d="M80 44 C88 44 90 40 96 40" stroke="#38bdf8" stroke-width="2.5" fill="none"/><circle class="room__bulb" cx="104" cy="40" r="8"/><path d="M60 26 C60 14 70 10 82 8" stroke="#a78bfa" stroke-width="2" stroke-dasharray="3 3" fill="none"/><rect x="84" y="2" width="12" height="18" rx="2.5" fill="#0f172a" stroke="#c4b5fd"/></svg>
+            </span>
+            <span class="room__body">
+              <small>โต๊ะทดลอง 3D มุมบน · ใหม่</small>
+              <b>ห้องเรียน IoT</b>
+              <span>ต่อเซนเซอร์เข้า Arduino, ESP32, Raspberry Pi เขียนกฎ ถ้า…แล้ว… คุมผ่านมือถือ และดูโค้ดจริง 6 บทเรียน</span>
+              <em>เข้าห้องเรียน IoT <i class="fa-solid fa-arrow-right"></i></em>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="live glass">
+          <div>
+            <h3>เห็นทุกแพ็กเก็ตที่วิ่งในเครือข่าย</h3>
+            <p>ตัวอย่างนี้คือสิ่งที่เกิดขึ้นจริงเมื่อ PC สั่ง ping: ถามหา MAC ด้วย ARP, สวิตช์ส่งต่อทุกพอร์ต, แล้วค่อยส่ง ICMP ตรงไปที่ปลายทาง ในห้อง 3D คุณจะเห็นแบบนี้กับอุปกรณ์ทุกชิ้นที่วางเอง</p>
+            <div class="live__legend">
+              <span><i style="background:#ffb020;color:#ffb020"></i>ARP</span>
+              <span><i style="background:#3ddc84;color:#3ddc84"></i>ICMP</span>
+              <span><i style="background:#b48cff;color:#b48cff"></i>DNS</span>
+            </div>
+          </div>
+          <figure class="topo" aria-label="ภาพจำลองแพ็กเก็ตวิ่งในเครือข่าย">
+            <svg id="topo" viewBox="0 0 560 320" role="img" aria-labelledby="topoText"></svg>
+            <figcaption class="topo__caption">
+              <span class="topo__proto" id="topoProto">ARP</span>
+              <span class="topo__text" id="topoText">PC-1 ถามหา MAC ของ Server</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section" id="labs">
+        <div class="section__head">
+          <div>
+            <h2>แล็บ</h2>
+            <p>เรียงจากพื้นฐานไปขั้นสูง ทุกแล็บมีภารกิจที่ระบบตรวจให้</p>
+          </div>
+          <span class="count" id="labCount"></span>
+        </div>
+        <div class="labs" id="labList"></div>
+        <div class="empty" id="labEmpty" hidden><b>ไม่พบแล็บที่ตรงกับคำค้น</b>ลองค้นด้วยชื่ออุปกรณ์ เช่น Router หรือ Wi-Fi</div>
+      </section>
+
+      <section class="section" id="progress">
+        <div class="section__head">
+          <div>
+            <h2>ความก้าวหน้าของฉัน</h2>
+            <p>เก็บ XP จากภารกิจ ไขคดีนักสืบ เข้าหัวสาย และป้องกันการโจมตี เพื่อเลื่อนเลเวลและปลดล็อกเหรียญ</p>
+          </div>
+        </div>
+        <div class="prog" id="progressBox"><div class="skeleton"></div></div>
+      </section>
+
+      <section class="section" id="projects">
+        <div class="section__head">
+          <div>
+            <h2>โครงการของฉัน</h2>
+            <p>ห้องที่คุณออกแบบไว้ เปิดต่อได้จากจุดเดิม</p>
+          </div>
+          <span class="count" id="projectCount"></span>
+        </div>
+        <div class="projects" id="projectList">
+          <div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- สร้างโครงการ -->
+  <dialog id="projectDialog" aria-labelledby="projectDialogTitle">
+    <form id="projectForm" class="form" method="dialog">
+      <div class="dialog__head">
+        <div>
+          <h2 id="projectDialogTitle">สร้างโครงการ</h2>
+          <p>ตั้งชื่อแล้วเลือกแล็บที่จะเริ่ม</p>
+        </div>
+        <button type="button" class="dialog__close" data-close aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="field">
+        <label for="projectName">ชื่อโครงการ</label>
+        <input id="projectName" required maxlength="60" placeholder="เช่น ห้องคอมพิวเตอร์ อาคาร 3">
+      </div>
+      <div class="field">
+        <label for="projectModel">แล็บ</label>
+        <select id="projectModel"></select>
+      </div>
+      <label class="check"><input type="checkbox" id="useTemplateCheck" checked> วางอุปกรณ์ตัวอย่างของแล็บให้</label>
+      <label class="check"><input type="checkbox" id="useActivityCheck"> เริ่มในโหมดภารกิจ (มีโจทย์ ตรวจคะแนนอัตโนมัติ)</label>
+      <div class="dialog__actions">
+        <button type="button" class="sc-btn sc-btn--ghost" data-close>ยกเลิก</button>
+        <button type="submit" class="sc-btn sc-btn--primary">สร้างและเปิดห้อง 3D</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- รายงาน -->
+  <dialog id="reportsDialog" aria-labelledby="reportsTitle" style="width:min(620px, calc(100vw - 32px))">
+    <div class="dialog__head">
+      <div>
+        <h2 id="reportsTitle">รายงานและคะแนน</h2>
+        <p>ผลการรันระบบและคะแนนภารกิจล่าสุด 50 รายการ</p>
+      </div>
+      <button type="button" class="dialog__close" data-close aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="reports" id="reportsList"></div>
+    <div class="dialog__actions">
+      <button type="button" class="sc-btn sc-btn--danger" id="clearReportsBtn">ล้างประวัติ</button>
+      <button type="button" class="sc-btn sc-btn--primary" data-close>ปิด</button>
+    </div>
+  </dialog>
+
+  <!-- บัญชีของฉัน -->
+  <dialog id="profileDialog" aria-labelledby="profileTitle">
+    <div class="dialog__head">
+      <div>
+        <h2 id="profileTitle">บัญชีของฉัน</h2>
+        <p id="profileSub"></p>
+      </div>
+      <button type="button" class="dialog__close" data-close aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" aria-selected="true" data-ptab="info">ข้อมูลส่วนตัว</button>
+      <button type="button" role="tab" aria-selected="false" data-ptab="password">เปลี่ยนรหัสผ่าน</button>
+    </div>
+    <form id="profileForm" class="form" novalidate>
+      <div class="form-error" id="profileError" role="alert"></div>
+      <div class="field"><label for="pfName">ชื่อ-นามสกุล</label><input id="pfName" maxlength="80"></div>
+      <div class="grid2">
+        <div class="field"><label for="pfClass">ห้องเรียน</label><input id="pfClass" maxlength="40"></div>
+        <div class="field"><label for="pfSid">รหัสนักเรียน</label><input id="pfSid" maxlength="20"></div>
+      </div>
+      <div class="dialog__actions"><button type="submit" class="sc-btn sc-btn--primary">บันทึกข้อมูล</button></div>
+    </form>
+    <form id="passwordForm" class="form" novalidate hidden>
+      <div class="form-error" id="passwordError" role="alert"></div>
+      <div class="field"><label for="pwOld">รหัสผ่านเดิม</label><input id="pwOld" type="password" autocomplete="current-password"></div>
+      <div class="field"><label for="pwNew">รหัสผ่านใหม่ (อย่างน้อย 8 ตัว)</label><input id="pwNew" type="password" autocomplete="new-password"></div>
+      <div class="field"><label for="pwNew2">ยืนยันรหัสผ่านใหม่</label><input id="pwNew2" type="password" autocomplete="new-password"></div>
+      <div class="dialog__actions"><button type="submit" class="sc-btn sc-btn--primary">เปลี่ยนรหัสผ่าน</button></div>
+    </form>
+  </dialog>
+
+  <script src="ui.js"></script>
+  <script src="activities.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
